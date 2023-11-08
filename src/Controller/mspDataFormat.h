@@ -1,5 +1,6 @@
 #ifndef MSP_DATA_FORMATS_H
 #define MSP_DATA_FORMATS_H
+#include "Arduino.h"
 
 typedef struct RAW_GPS_DATA{
   uint8_t GPS_FIX;  // 0 or 1

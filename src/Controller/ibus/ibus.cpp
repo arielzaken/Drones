@@ -29,6 +29,7 @@ void Ibus::begin(HardwareSerial& serial, uint8_t rx_pin , uint8_t tx_pin)
 {
   this->serial = &serial;
   this->serial->begin(IBUS_BAUD_RATE, SERIAL_8N1 ,rx_pin,tx_pin);
+  enable();
 }
 
 void Ibus::loop(void) {
@@ -36,12 +37,6 @@ void Ibus::loop(void) {
   if (this->isEnabled && (this->currentMillis - this->previousMillis >= IBUS_SEND_INTERVAL_MS)) {
     this->sendPacket();
     this->previousMillis = this->currentMillis;
-  }
-  if(this->serial->available()){
-    while(this->serial->available()){
-      Serial.print(this->serial->read());
-    }
-    Serial.print('\n');
   }
 }
 
@@ -75,7 +70,7 @@ void Ibus::disable() {
   this->isEnabled = false;
 }
 
-void Ibus::setControlValuesList(uint8_t list[IBUS_CHANNELS_COUNT]) {
+void Ibus::setControlValuesList(uint16_t list[IBUS_CHANNELS_COUNT]) {
   for(size_t i = 0; i < (IBUS_CHANNELS_COUNT); i++)
     setChannel(i,list[i]);
 }

@@ -23,24 +23,32 @@
 #ifndef Ibus_h
 #define Ibus_h
 
+#define IBUS_BAUD_RATE 115200
+#define IBUS_SEND_INTERVAL_MS 100
+#define IBUS_PACKET_BYTES_COUNT 32
+#define IBUS_CHANNELS_COUNT 14
+#define MIN_CONTROL_VALUE 1000
+#define MAX_CONTROL_VALUE 2000
+
+
 #include "Arduino.h"
 
 class Ibus {
   public:
-    static const unsigned long IBUS_BAUD_RATE = 115200;
+    /*static const unsigned long IBUS_BAUD_RATE = 115200;
     static const unsigned int IBUS_SEND_INTERVAL_MS = 100;
     static const unsigned int IBUS_PACKET_BYTES_COUNT = 32;
     static const unsigned int IBUS_CHANNELS_COUNT = 14;
     static const unsigned int DEFAULT_CONTROL_VALUE = 1000;
     static const unsigned int MIN_CONTROL_VALUE = 1000;
-    static const unsigned int MAX_CONTROL_VALUE = 2000;
+    static const unsigned int MAX_CONTROL_VALUE = 2000;*/
 
 
     void begin(HardwareSerial &serial, uint8_t rxPin, uint8_t txPin);
     void loop(void);
     void enable(void);
     void disable(void);
-    void setControlValuesList(uint8_t list[IBUS_CHANNELS_COUNT]);
+    void setControlValuesList(uint16_t list[IBUS_CHANNELS_COUNT]);
     void setChannel(uint8_t channel , uint16_t val);
 
   private:
@@ -49,7 +57,7 @@ class Ibus {
     unsigned long currentMillis = 0;
 
     uint8_t controlValuesList[IBUS_CHANNELS_COUNT * 2];
-    boolean isEnabled = false;
+    boolean isEnabled = true;
 
     void sendPacket(void);
     uint8_t * createPacket(void);
