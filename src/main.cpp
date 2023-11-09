@@ -1,5 +1,25 @@
 #include <Arduino.h>
-#include "Controller/Controller.h"
+#include "Operator/Operator.h"
+
+void setup() {
+  Serial.begin(115200);
+  OP.begin();
+}
+
+bool mspEnable = 0;
+ALTITUDE_DATA altData;
+void loop() {
+  if(Serial.available())
+    switch((char)Serial.read()){
+    case 't':
+      OP.takeOff();
+      break;
+    }
+  OP.loop();
+}/**/
+
+
+/*#include "Controller/Controller.h"
 
 void setup() {
   Serial.begin(115200);

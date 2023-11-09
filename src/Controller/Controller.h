@@ -8,7 +8,7 @@
 #define ARM_CHANNEL 4
 #define ARM_VAL 1800
 #define DISARM_VAL 1000
-#define ARM_DEFULATE_VALUE DISARM_VAL
+#define ARM_DEFULATE_VALUE 1000
 
 #define ROLL_CHANNEL 0
 #define ROLL_DEFAULT_VALUE 1500
@@ -29,6 +29,9 @@ public:
   void begin();
   void loop();
 
+  void disconnect();
+  void connect();
+
   // arm commands
   void arm();
   void disarm();
@@ -39,6 +42,13 @@ public:
   void setPitch(uint16_t pit);
   void setYaw(uint16_t pit);
   void setAUX(uint8_t channel, uint16_t val);
+
+  // getters for controller
+  uint16_t getThrottle();
+  uint16_t getRoll();
+  uint16_t getPitch();
+  uint16_t getYaw();
+  uint16_t getAUX(uint8_t channel);
 
   // reset the controller to the default settings
   void resetThrottle();

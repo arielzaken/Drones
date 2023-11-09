@@ -79,3 +79,8 @@ void Ibus::setChannel(uint8_t ch , uint16_t val) {
     this->controlValuesList[ch*2] = lowByte(val);
     this->controlValuesList[(ch*2)+1] = highByte(val);
 }
+
+uint16_t Ibus::getChannel(uint8_t ch)
+{
+    return (uint16_t)(controlValuesList[ch*2] | controlValuesList[(ch*2)+1] << 8);
+}

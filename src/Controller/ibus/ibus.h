@@ -50,7 +50,7 @@ class Ibus {
     void disable(void);
     void setControlValuesList(uint16_t list[IBUS_CHANNELS_COUNT]);
     void setChannel(uint8_t channel , uint16_t val);
-
+    uint16_t getChannel(uint8_t channel);
   private:
     HardwareSerial *serial;
     unsigned long previousMillis = 0;
