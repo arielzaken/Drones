@@ -6,7 +6,6 @@ void Controller::begin(){
   msp.begin(Serial2);
   ibus.begin(Serial1, 4, 2);
   resetChannels();
-  loop();
 }
 
 void Controller::loop(){
