@@ -6,10 +6,10 @@
 /// @brief a calss to give functions "time" dimention in the local loop 
 class ProgramPlayer{
     /// @brief the current cycle
-    unsigned long time = 0; 
+    uint64_t time = 0; 
     unsigned long last_time;
 public:
-    void reset() { time = 0;};
+    void reset() { time = 0; last_time = millis();};
     unsigned long getTime() {
         unsigned long current = millis();
         time += current - last_time;

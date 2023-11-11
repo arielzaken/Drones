@@ -25,6 +25,13 @@
 #define AUX_DEFAULT_VALUE 1500
 
 class Controller{
+  ALTITUDE_DATA altData;
+  ATTITUDE_DATA attData;
+  COMP_GPS_DATA comData;
+  RAW_GPS_DATA rawData;
+  ANALOG_DATA analogData;
+
+  bool armFlag = false;
 public:
   void begin();
   void loop();
@@ -35,7 +42,7 @@ public:
   // arm commands
   void arm();
   void disarm();
-
+  bool isArmed() {return armFlag;};
   // setters for controller
   void setThrottle(uint16_t thr);
   void setRoll(uint16_t roll);

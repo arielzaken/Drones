@@ -2,18 +2,47 @@
 
 Operator OP;
 
+void Operator::printState()
+{
+    Serial.print("current state: ");
+    switch(state){
+    case EMERGENCY_LANDING:
+        Serial.println("EMERGENCY_LANDING");
+        break;
+    case IDLE_GROUND:
+        Serial.println("IDLE_GROUND");
+        break;
+    case IDLE_AIR:
+        Serial.println("IDLE_AIR");
+        break;
+    case ARM:
+        Serial.println("ARM");
+        break;
+    case TAKE_OFF:
+        Serial.println("TAKE_OFF");
+        break;
+    default:
+        Serial.println("UNKNOWN");
+        break;
+    }
+}
+
 uint16_t Operator::mapAltToThrottle(ALTITUDE_DATA alt)
 {
     return controller.getThrottle() + (alt.EstAlt);
 }
 
+void Operator::takeOff(uint64_t time)
+{
+}
+
 void Operator::arm(uint64_t time)
 {   
-    if(time<=200)
+    if(time<=1000 && time >= 800){
         controller.disarm();
-    else if(time>=5000)
+    }
+    else if(time>=7000){
         controller.arm();
-    else{
         state = IDLE_GROUND;
     }
 }
@@ -22,6 +51,10 @@ void Operator::arm(uint64_t time)
 void Operator::begin()
 {
     controller.begin();
+    debugLiveDelay.setDelay(DEBUG_PRINT_DELAY);
+    state = IDLE_GROUND;
+    if(arm())
+        Serial.println("arming...");
 }
 
 void Operator::loop()
@@ -34,37 +67,39 @@ void Operator::loop()
         takeOff(PP.getTime());
         break;
     case IDLE_AIR:
-        PP.reset();
         break;
     case IDLE_GROUND:
-        PP.reset();
         break;
     case EMERGENCY_LANDING:
         break;
     }
-
-
-
-    // check if we exceeded the limit of the highet
     ALTITUDE_DATA alt = controller.getAltitude();
-    if(alt.EstAlt >= MAX_ALT)
+    if(controller.isArmed() && alt.EstAlt >= MAX_ALT)
         emergencyLanding();
     
+    if(debugLiveDelay.tryToActivate())
+        printState();
     controller.loop();
 }
 
-void Operator::arm()
+bool Operator::arm()
 {
     if(isAvailable()){
         state = ARM;
         PP.reset();
+        return true;
     }
+    return false;
 }
 
-void Operator::takeOff()
+bool Operator::takeOff()
 {
-    if(isAvailable())
+    if(isAvailable()){
         state = TAKE_OFF;
+        PP.reset();
+        return true;
+    }
+    return false;
 }
 
 void Operator::emergencyLanding()
