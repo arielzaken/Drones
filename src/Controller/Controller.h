@@ -71,6 +71,9 @@ public:
   ATTITUDE_DATA getAttitude(); // get the attitude of the craft
   ALTITUDE_DATA getAltitude(); // get the altitude of the craft
   ANALOG_DATA getAnalog(); // get the analog values (only the battery volteg is worth it)
+
+  // setters for the controller
+  bool accCalibration();
 };
 
 

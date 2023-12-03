@@ -1,4 +1,60 @@
 #include <Arduino.h>
+
+
+
+
+
+#include "Controller/Controller.h"
+#include <BluetoothSerial.h>
+
+BluetoothSerial SerialBT;
+
+void setup() {
+  Serial.begin(9600);
+  SerialBT.begin("clone_drone_in_the_danger_zone");
+  controller.begin();
+  while(!SerialBT.connected()) delay(1);  
+}
+
+//ALTITUDE_DATA altData;
+void loop() {
+  if(SerialBT.available()){
+    switch((char)SerialBT.read()){
+    case 't':
+    {
+      String thString = SerialBT.readStringUntil('\n');
+      int th = thString.toInt();
+      controller.setThrottle(th);   
+    }
+      break;
+    case 'a':
+      controller.arm();
+      break;
+    case 'd':
+      controller.disarm();
+      break;
+    case 'A':
+      {
+      ALTITUDE_DATA altData = controller.getAltitude();
+      SerialBT.printf("alt: %d alt speed: %d\n",altData.EstAlt,altData.vario);
+      break;
+      }
+    case 'c':
+      if(controller.accCalibration())
+        SerialBT.println("acc calibrationetad");
+      break; 
+    }  
+  }
+  if (!SerialBT.connected()) {
+    controller.disconnect();
+  }
+  controller.loop();
+}/**/
+
+
+
+
+/*
 #include "Operator/Operator.h"
 
 void setup() {
@@ -31,7 +87,6 @@ void setup() {
   controller.begin();
 }
 
-bool mspEnable = 0;
 //ALTITUDE_DATA altData;
 void loop() {
   if(Serial.available()){
@@ -57,6 +112,10 @@ void loop() {
       Serial.printf("alt: %d alt speed: %d\n",altData.EstAlt,altData.vario);
       break;
       }
+    case 'c':
+      if(controller.accCalibration())
+        Serial.println("acc calibrationetad");
+      break;
     }  
   }
   controller.loop();
@@ -66,11 +125,10 @@ void loop() {
 #include "Controller/msp/Msp.h"
 #include "Controller/mspDataFormat.h"
 
-ALTITUDE_DATA getAltitude(){
-  ALTITUDE_DATA ans;
+void cal(){
   MspAnswer mspAns;
   do{
-    mspAns = msp.sendRequest(MSP_ALTITUDE);
+    mspAns = msp.sendMSPToFC(MSP_ACC_CALIBRATION);
   }while(!mspAns.valid);
   if(mspAns.valid){
     ans.EstAlt = mspAns.data[0] | mspAns.data[1] << 8 | mspAns.data[2] << 16 | mspAns.data[3] << 24 ;

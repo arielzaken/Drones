@@ -117,7 +117,7 @@ void Controller::setThrottle(uint16_t tho){
 
 ALTITUDE_DATA Controller::getAltitude(){
   if(altData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendRequest(MSP_ALTITUDE);
+    MspAnswer mspAns = msp.sendMSPFromFC(MSP_ALTITUDE);
     if(mspAns.valid){
       altData.EstAlt = mspAns.data[0] | mspAns.data[1] << 8 | mspAns.data[2] << 16 | mspAns.data[3] << 24 ;
       altData.vario = mspAns.data[4] | mspAns.data[5] << 8;
@@ -129,7 +129,7 @@ ALTITUDE_DATA Controller::getAltitude(){
 ANALOG_DATA Controller::getAnalog()
 {
   if(analogData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendRequest(MSP_ANALOG);
+    MspAnswer mspAns = msp.sendMSPFromFC(MSP_ANALOG);
     if(mspAns.valid){
       analogData.vbat = mspAns.data[0];
       analogData.intPowerMeterSum = mspAns.data[1] | mspAns.data[2] << 8;
@@ -140,11 +140,16 @@ ANALOG_DATA Controller::getAnalog()
   return analogData;
 }
 
+bool Controller::accCalibration()
+{
+  MspAnswer mspAns = msp.sendMSPToFC(MSP_ACC_CALIBRATION,NULL,0);
+  return mspAns.valid;
+}
 
 RAW_GPS_DATA Controller::getRawGPS()
 {
   if(rawData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendRequest(MSP_RAW_GPS);
+    MspAnswer mspAns = msp.sendMSPFromFC(MSP_RAW_GPS);
     if(mspAns.valid){
       rawData.GPS_FIX = mspAns.data[0];
       rawData.GPS_numSat = mspAns.data[1];
@@ -161,7 +166,7 @@ RAW_GPS_DATA Controller::getRawGPS()
 COMP_GPS_DATA Controller::getCompGPS()
 {
   if(comData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendRequest(MSP_COMP_GPS);
+    MspAnswer mspAns = msp.sendMSPFromFC(MSP_COMP_GPS);
     if(mspAns.valid){
       comData.GPS_distanceToHome = mspAns.data[0] | mspAns.data[1] << 8;
       comData.GPS_directionToHome = mspAns.data[2] | mspAns.data[3] << 8;
@@ -174,7 +179,7 @@ COMP_GPS_DATA Controller::getCompGPS()
 ATTITUDE_DATA Controller::getAttitude()
 {
   if(attData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendRequest(MSP_ATTITUDE);
+    MspAnswer mspAns = msp.sendMSPFromFC(MSP_ATTITUDE);
     if(mspAns.valid){
       attData.angx = mspAns.data[0] | mspAns.data[1] << 8 ;
       attData.angy = mspAns.data[2] | mspAns.data[3] << 8 ;

@@ -35,6 +35,9 @@
 #define MSP_RC_TUNING            111    //out message         rc rate, rc expo, rollpitch rate, yaw rate, dyn throttle PID
 #define MSP_PID                  112    //out message         P I D coeff (9 are used currently)
 
+#define MSP_ACC_CALIBRATION      205    //in  message         callebrate the accelerometer
+
+
 #include "Arduino.h"
 #include "MspAnswer.h"
 
@@ -45,13 +48,14 @@ class Msp {
     static const unsigned long MSP_BAUD_RATE = 115200;
 
     void begin(HardwareSerial &serial);
-    MspAnswer sendRequest(int req);
+    MspAnswer sendMSPFromFC(int req);
+    MspAnswer sendMSPToFC(int req,uint8_t* data,int len);
   private:
     MspAnswer checkForAnswer();
     state stat;
     HardwareSerial *serial;
     static uint8_t request[5];
-    uint8_t get_crc(uint8_t* data,int len);
+    uint8_t get_crc(uint8_t startCrc,uint8_t* data,int len);
 };
 
 extern Msp msp;

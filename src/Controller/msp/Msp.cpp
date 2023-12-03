@@ -13,15 +13,28 @@ void Msp::begin(HardwareSerial& serial) { // begin the serial object
 /*
 send a requast for data
 */
-MspAnswer Msp::sendRequest(int req) {
+MspAnswer Msp::sendMSPFromFC(int req) {
   request[4] = req;
   this->serial->write(request, sizeof(request));
-  this->serial->write(get_crc(request+3, sizeof(request+3)));
+  this->serial->write(get_crc(0,request+3, sizeof(request+3)));
   return checkForAnswer();
 }
 
-uint8_t Msp::get_crc(uint8_t* data, int len) {
+MspAnswer Msp::sendMSPToFC(int req, uint8_t *data, int len)
+{
   uint8_t crc = 0;
+  crc ^= len;
+  crc ^= req;
+  request[3] = len;
+  request[4] = req;
+  this->serial->write(request, sizeof(request));
+  this->serial->write(data, len);
+  this->serial->write(get_crc(crc, data, len));
+  return checkForAnswer();
+}
+
+uint8_t Msp::get_crc(uint8_t startCrc,uint8_t* data, int len) {
+  uint8_t crc = startCrc;
   for (int i = 0; i < len; i++)
     crc ^= data[i];
   return crc;

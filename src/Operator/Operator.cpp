@@ -34,6 +34,10 @@ uint16_t Operator::mapAltToThrottle(ALTITUDE_DATA alt)
 
 void Operator::takeOff(uint64_t time)
 {
+    if(time < 3000)
+        controller.setThrottle(map(time,0,3000,1000,1250));
+    else
+        state = IDLE_AIR;
 }
 
 void Operator::arm(uint64_t time)
