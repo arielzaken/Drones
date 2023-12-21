@@ -27,11 +27,6 @@ void Operator::printState()
     }
 }
 
-uint16_t Operator::mapAltToThrottle(ALTITUDE_DATA alt)
-{
-    return controller.getThrottle() + (alt.EstAlt);
-}
-
 void Operator::takeOff(uint64_t time)
 {
     if(time < 3000)
@@ -56,7 +51,8 @@ void Operator::begin()
 {
     controller.begin();
     debugLiveDelay.setDelay(DEBUG_PRINT_DELAY);
-    state = IDLE_GROUND;
+    altPID.SetMode(AUTOMATIC);
+    state = IDLE_GROUND; 
     if(arm())
         Serial.println("arming...");
 }
@@ -77,12 +73,21 @@ void Operator::loop()
     case EMERGENCY_LANDING:
         break;
     }
+
+    // get sensors values
     ALTITUDE_DATA alt = controller.getAltitude();
+
+    // altitude hold PID
+    
+
+    // emergency landing 
     if(controller.isArmed() && alt.EstAlt >= MAX_ALT)
         emergencyLanding();
     
+    // print the current state
     if(debugLiveDelay.tryToActivate())
         printState();
+
     controller.loop();
 }
 

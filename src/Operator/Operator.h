@@ -4,6 +4,7 @@
 
 #include "Controller/Controller.h"
 #include "ProgramPlayer/ProgramPlayer.h"
+#include "algorithems/PID/PID_v1.h"
 
 #define MAX_ALT 2*100 // [cm]
 #define DEBUG_PRINT_DELAY 400
@@ -18,8 +19,11 @@ class Operator
     // Program player
     ProgramPlayer PP;
 
-    // flight parameters
-    int32_t requiredAlt; // the required altitude of the drone
+    // throttel PID vars
+    double requiredAlt; // the required altitude of the drone
+    double currentAlt; // the curent altitude of the drone
+    double hoverThrottle; // throttle
+    PID altPID = PID(&requiredAlt, &currentAlt, &hoverThrottle, 3, 2, 4, P_ON_M, DIRECT);
     
     // state related 
     OPERATOR_STATE state; // the state of the operator
@@ -34,8 +38,6 @@ class Operator
     // programs functions
     void takeOff(uint64_t time); // a privet function for takeoff 
     void arm(uint64_t time);
-
-    // 
 
 public:
     void begin();
