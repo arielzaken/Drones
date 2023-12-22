@@ -1,23 +1,26 @@
 #include <Arduino.h>
 #include "Controller/Controller.h"
+#include <BluetoothSerial.h>
+
+BluetoothSerial SerialBT;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
+  SerialBT.begin("clone_drone_in_the_danger_zone");
   controller.begin();
+  while(!SerialBT.connected()) delay(1);  
 }
 
 //ALTITUDE_DATA altData;
 void loop() {
-  if(Serial.available()){
-    switch((char)Serial.read()){
-    case '0':
-      controller.setThrottle(1000);
-      break;
-    case '1':
-      controller.setThrottle(1100);
-      break;
-    case '2':
-      controller.setThrottle(1500);
+  if(SerialBT.available()){
+    switch((char)SerialBT.read()){
+    case 't':
+    {
+      String thString = SerialBT.readStringUntil('\n');
+      int th = thString.toInt();
+      controller.setThrottle(th);   
+    }
       break;
     case 'a':
       controller.arm();
@@ -28,14 +31,17 @@ void loop() {
     case 'A':
       {
       ALTITUDE_DATA altData = controller.getAltitude();
-      Serial.printf("alt: %d alt speed: %d\n",altData.EstAlt,altData.vario);
+      SerialBT.printf("alt: %d alt speed: %d\n",altData.EstAlt,altData.vario);
       break;
       }
     case 'c':
       if(controller.accCalibration())
-        Serial.println("acc calibrationetad");
-      break;
+        SerialBT.println("acc calibrationetad");
+      break; 
     }  
+  }
+  if (!SerialBT.connected()) {
+    controller.disconnect();
   }
   controller.loop();
 }

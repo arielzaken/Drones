@@ -4,35 +4,37 @@ Operator OP;
 
 void Operator::printState()
 {
-    Serial.print("current state: ");
+    serial->print("current state: ");
     switch(state){
     case EMERGENCY_LANDING:
-        Serial.println("EMERGENCY_LANDING");
+        serial->println("EMERGENCY_LANDING");
         break;
     case IDLE_GROUND:
-        Serial.println("IDLE_GROUND");
+        serial->println("IDLE_GROUND");
         break;
     case IDLE_AIR:
-        Serial.println("IDLE_AIR");
+        serial->println("IDLE_AIR");
         break;
     case ARM:
-        Serial.println("ARM");
+        serial->println("ARM");
         break;
     case TAKE_OFF:
-        Serial.println("TAKE_OFF");
+        serial->println("TAKE_OFF");
         break;
     default:
-        Serial.println("UNKNOWN");
+        serial->println("UNKNOWN");
         break;
     }
 }
 
 void Operator::takeOff(uint64_t time)
 {
-    if(time < 3000)
-        controller.setThrottle(map(time,0,3000,1000,1250));
-    else
-        state = IDLE_AIR;
+    if(controller.isArmed()){
+        if(time < 3000)
+            controller.setThrottle(map(time,0,3000,1000,1250));
+        else
+            state = IDLE_AIR;
+    }
 }
 
 void Operator::arm(uint64_t time)
@@ -47,14 +49,26 @@ void Operator::arm(uint64_t time)
 }
 
 /// @brief this func init the operator. (without delay to avoid BAD-RX-timeout)
-void Operator::begin()
+void Operator::begin(HardwareSerial& _serial)
 {
+    // inisialize the serial object
+    this->serial = &_serial;
+
+    // begin the controller
     controller.begin();
+
+    // initialize the debugLiveDelay
     debugLiveDelay.setDelay(DEBUG_PRINT_DELAY);
+
+    //PID setup
     altPID.SetMode(AUTOMATIC);
+    altPID.SetOutputLimits(-100, 100);
+    requiredAlt = 2.0;
     state = IDLE_GROUND; 
+
+    // self arming
     if(arm())
-        Serial.println("arming...");
+        serial->println("armed");
 }
 
 void Operator::loop()
@@ -74,20 +88,29 @@ void Operator::loop()
         break;
     }
 
-    // get sensors values
-    ALTITUDE_DATA alt = controller.getAltitude();
+    if(state != EMERGENCY_LANDING){
+        // get sensors values
+        ALTITUDE_DATA alt = controller.getAltitude();
+        currentAlt = alt.EstAlt/100.f; // in meters
 
-    // altitude hold PID
+        // altitude hold PID
+        if(state != IDLE_GROUND && state != TAKE_OFF && state != ARM){
+            altPID.Compute();
+            serial->printf("thr: % 7.3f | alt: % 7.3f\n",1250 + hoverThrottle, currentAlt);
+        }
+
+        // emergency landing 
+        if(controller.isArmed() && alt.EstAlt >= MAX_ALT){
+            emergencyLanding();
+            serial->printf("emergency landing: alt = %d\n", currentAlt);
+        }
+        
+        // print the current state
+        if(debugLiveDelay.tryToActivate()){
+            printState();
+        }
+    }
     
-
-    // emergency landing 
-    if(controller.isArmed() && alt.EstAlt >= MAX_ALT)
-        emergencyLanding();
-    
-    // print the current state
-    if(debugLiveDelay.tryToActivate())
-        printState();
-
     controller.loop();
 }
 

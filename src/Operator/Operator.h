@@ -6,7 +6,7 @@
 #include "ProgramPlayer/ProgramPlayer.h"
 #include "algorithems/PID/PID_v1.h"
 
-#define MAX_ALT 2*100 // [cm]
+#define MAX_ALT 200 // [cm]
 #define DEBUG_PRINT_DELAY 400
 
 
@@ -14,16 +14,18 @@ enum OPERATOR_STATE { EMERGENCY_LANDING, IDLE_GROUND, IDLE_AIR, ARM, TAKE_OFF };
 
 class Operator
 {
+    HardwareSerial* serial; 
     LiveDelay debugLiveDelay;
 
     // Program player
     ProgramPlayer PP;
 
     // throttel PID vars
+    // TODO: implement a struct for PID variables
     double requiredAlt; // the required altitude of the drone
     double currentAlt; // the curent altitude of the drone
     double hoverThrottle; // throttle
-    PID altPID = PID(&requiredAlt, &currentAlt, &hoverThrottle, 3, 2, 4, P_ON_M, DIRECT);
+    PID altPID = PID(&currentAlt, &hoverThrottle, &requiredAlt, 3, 2, 4, P_ON_E, DIRECT);
     
     // state related 
     OPERATOR_STATE state; // the state of the operator
@@ -40,7 +42,7 @@ class Operator
     void arm(uint64_t time);
 
 public:
-    void begin();
+    void begin(HardwareSerial& _serial);
     void loop();
 
     bool arm();
