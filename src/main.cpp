@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-
+/*
 #include "Controller/Controller.h"
 #include <BluetoothSerial.h>
 
@@ -30,9 +30,9 @@ void loop() {
     controller.disconnect();
   }
   controller.loop();
-}
+}/**/
 
-/*
+
 #include "Controller/Controller.h"
 #include <BluetoothSerial.h>
 
@@ -76,6 +76,11 @@ void loop() {
   }
   if (!SerialBT.connected()) {
     controller.disconnect();
+  }
+
+  ALTITUDE_DATA alt = controller.getAltitude();
+  if(alt.EstAlt > 100 && controller.isArmed()){
+    controller.disarm();
   }
   controller.loop();
 }/**/
