@@ -1,13 +1,13 @@
 #include <Arduino.h>
 #include "Operator/Operator.h"
-#include <BluetoothSerial.h>
+#include "BluetoothSerial.h"
 
 BluetoothSerial SerialBT;
 
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("clone_drone_in_the_danger_zone");
-  OP.begin(Serial);
+  OP.begin(Serial, SerialBT);
 }
 
 void loop() {
@@ -22,6 +22,9 @@ void loop() {
       break;
     case 'e':
       OP.emergencyLanding();
+      break;
+    case 'E':
+      controller.disconnect();
       break;
     }
   OP.loop();

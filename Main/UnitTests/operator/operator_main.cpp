@@ -1,20 +1,24 @@
 #include <Arduino.h>
 #include "Operator/Operator.h"
+#include "BluetoothSerial.h"
+
+BluetoothSerial SerialBT;
 
 void setup() {
   Serial.begin(115200);
-  OP.begin();
+  SerialBT.begin("clone_drone_in_the_danger_zone");
+  OP.begin(Serial);
 }
 
 void loop() {
-  if(Serial.available())
-    switch((char)Serial.read()){
+  if(SerialBT.available())
+    switch((char)SerialBT.read()){
     case 't':
       OP.takeOff();
       break;
     case 'a':
       if(OP.arm())
-        Serial.println("armed");
+        SerialBT.println("armed");
       break;
     case 'e':
       OP.emergencyLanding();
