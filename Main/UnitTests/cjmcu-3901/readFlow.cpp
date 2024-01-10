@@ -10,12 +10,15 @@ void setup()
 {
     Serial.begin(115200);
 
-    SPI.begin(19, 18, 5, 23);
+    SPI.begin();
 
-        while(!sensor.begin(27)) { 
+    if (!sensor.begin()) {
+
+        while(true) { 
             Serial.println("Initialization of the flow sensor failed");
             delay(500);
         }
+    }
 }
 
 void loop() 
