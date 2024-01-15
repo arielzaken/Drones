@@ -76,6 +76,11 @@ void Controller::resetYaw(){
 void Controller::resetAUX(uint8_t channel){
   setAUX(channel, AUX_DEFAULT_VALUE);
 }
+ bool Controller::equalAltitude(int32_t alt){
+  if(abs(getAltitude().EstAlt-alt)<25)
+    return true;
+  return false;
+ }
 
 void Controller::resetChannels(){
   resetThrottle();
