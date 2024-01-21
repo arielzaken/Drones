@@ -12,12 +12,13 @@ protected:
     bool (*ptrIsOkToNext)();
     void (*ptrLoop)();
 public:
-    State(bool (*ptrIsOkToNext)(), void (*ptrLoop)());
+    State(bool (&ptrIsOkToNext)(), void (&ptrLoop)());
     char* getName() { return name; }
     State* getNextState() { return nextState; }
     bool IsOkToNext();
     void loop();
 };
+
 
 
 #endif // STATE_H

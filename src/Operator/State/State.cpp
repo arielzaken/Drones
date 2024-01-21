@@ -1,4 +1,5 @@
 #include "State.h"
+#include <stdio.h>
 
 char *State::get_name()
 {
@@ -57,6 +58,10 @@ bool Land::isOkToNext()
 bool Land::loop()
 {
     return false;
+}
+
+State::State(, void (*ptrLoop)())
+{
 }
 
 bool State::IsOkToNext()
