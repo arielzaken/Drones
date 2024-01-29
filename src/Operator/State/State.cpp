@@ -1,75 +1,23 @@
 #include "State.h"
 #include <stdio.h>
 
-char *State::get_name()
+char *State::getName()
 {
     return name;
 }
 
-/****************************************************************/
-
-bool IdleGround::isOkToNext()
+State::State(const char* _name, bool (*_ptrIsOkToNext)(), void (*_ptrLoop)())
+    :ptrIsOkToNext(_ptrIsOkToNext), ptrLoop(_ptrLoop), nextState(nullptr), mission(nullptr) 
 {
-    if(mission!=NULL)
-        return true;
-    return false;
-}
-
-bool IdleGround::loop()
-{
-    
-    return false;
-}
-
-/****************************************************************/
-
-bool TakeOff::isOkToNext()
-{
-    if(Controller.equalAltitude())
-        return true
-    return false;
-}
-
-bool TakeOff::loop()
-{
-    return false;
-}
-
-/****************************************************************/
-
-bool Transfer::isOkToNext()
-{
-    if(mission.end_point)
-    return false;
-}
-
-bool Transfer::loop()
-{
-    return false;
-}
-
-/****************************************************************/
-
-bool Land::isOkToNext()
-{
-    return false;
-}
-
-bool Land::loop()
-{
-    return false;
-}
-
-State::State(, void (*ptrLoop)())
-{
+    strncpy(this->name, _name, sizeof(this->name));
 }
 
 bool State::IsOkToNext()
 {
-    return (*ptrIsOkToNext)();
+    return ptrIsOkToNext();
 }
 
 void State::loop()
 {
-    return (*ptrLoop)();
+    return ptrLoop();
 }
