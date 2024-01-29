@@ -28,19 +28,18 @@ void StateWin::inisialize()
     if (currentState)
         deleteStates();
     State* gndState = new State("gnd", 
-        [](){ // isOkToNext
+        [](){ if(mission!=NULL) return true;// isOkToNext
             return false;
         }, [](uint64_t time){ // loop
 
         }, mission);
     State* takeOffState = new State("tof", 
-        [](){ // isOkToNext
-            return false;
+        [](){return(Controller.getAltitude.equalAltitude(requiredAlt)) // isOkToNext
         }, [](uint64_t time){ // loop
 
         }, mission);
     State* inTransitState = new State("trn", 
-        [](){ // isOkToNext
+        [](){if(Controller.getRawGPS) // isOkToNext
             return false;
         }, [](uint64_t time){ // loop
 

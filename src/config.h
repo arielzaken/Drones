@@ -19,6 +19,12 @@
 #define ALT_PID_D 0
 
 
+/******************
+ * GPS CONFIG *
+ *****************/
+#define uint32_t ERROR_RADIUS = 300 // [cm] the error radius in which two locations are considered the same
+
+
 /**************
  * MSP CONFIG *
  *************/
