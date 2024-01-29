@@ -1,37 +1,31 @@
 #include <Arduino.h>
-#include "dev\pmw3901.hpp"
+#include "Operator/Operator.h"
+#include "BluetoothSerial.h"
 
-#include <SPI.h>
+BluetoothSerial SerialBT;
 
-// Using digital pin 10 for chip select
-static PMW3901 sensor;
-
-void setup() 
-{
-    Serial.begin(115200);
-
-    SPI.begin(19, 18, 5, 23);
-
-        while(!sensor.begin(27)) { 
-            Serial.println("Initialization of the flow sensor failed");
-            delay(500);
-        }
+void setup() {
+  Serial.begin(115200);
+  SerialBT.begin("clone_drone_in_the_danger_zone");
+  OP.begin(Serial, SerialBT);
 }
 
-void loop() 
-{
-    int16_t deltaX = 0;
-    int16_t deltaY = 0;
-    bool gotMotion = false;
-
-    sensor.readMotion(deltaX, deltaY, gotMotion); 
-
-    Serial.print("deltaX: ");
-    Serial.print(deltaX);
-    Serial.print(",\tdeltaY: ");
-    Serial.print(deltaY);
-    Serial.print(",\tgotMotion: ");
-    Serial.println(gotMotion ? "yes" : "no");
-
-    delay(100);
+void loop() {
+  if(SerialBT.available())
+    switch((char)SerialBT.read()){
+    case 't':
+      OP.takeOff();
+      break;
+    case 'a':
+      if(OP.arm())
+        SerialBT.println("armed");
+      break;
+    case 'e':
+      OP.emergencyLanding();
+      break;
+    case 'E':
+      controller.disconnect();
+      break;
+    }
+  OP.loop();
 }

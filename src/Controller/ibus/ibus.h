@@ -23,14 +23,7 @@
 #ifndef Ibus_h
 #define Ibus_h
 
-#define IBUS_BAUD_RATE 115200
-#define IBUS_SEND_INTERVAL_MS 100
-#define IBUS_PACKET_BYTES_COUNT 32
-#define IBUS_CHANNELS_COUNT 14
-#define MIN_CONTROL_VALUE 1000
-#define MAX_CONTROL_VALUE 2000
-
-
+#include "config.h"
 #include "Arduino.h"
 
 class Ibus {

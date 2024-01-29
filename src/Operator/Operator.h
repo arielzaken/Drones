@@ -6,14 +6,8 @@
 #include "ProgramPlayer/ProgramPlayer.h"
 #include "algorithems/PID/PID_v1.h"
 #include "BluetoothSerial.h"
+#include "config.h"
 
-#define DEBUG_PRINT_DELAY 200
-
-#define MAX_ALT 200 // [cm]
-#define ALT_PID_P 5
-#define ALT_PID_I 0
-#define ALT_PID_D 0
-#define H 5.0 // [m]
 
 enum OPERATOR_STATE { EMERGENCY_LANDING, IDLE_GROUND, IDLE_AIR, ARM, TAKE_OFF, LAND };
 

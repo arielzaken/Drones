@@ -1,11 +1,6 @@
 #include "State.h"
 #include <stdio.h>
 
-char *State::getName()
-{
-    return name;
-}
-
 State::State(const char* _name, bool (*_ptrIsOkToNext)(), void (*_ptrLoop)())
     :ptrIsOkToNext(_ptrIsOkToNext), ptrLoop(_ptrLoop), nextState(nullptr), mission(nullptr) 
 {

@@ -4,7 +4,6 @@
 
 
 typedef struct Mission{
-    
     GPS_pos end_point;
 } Mission;
 
