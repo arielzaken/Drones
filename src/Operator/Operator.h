@@ -13,8 +13,7 @@ enum OPERATOR_STATE { EMERGENCY_LANDING, IDLE_GROUND, IDLE_AIR, ARM, TAKE_OFF, L
 
 class Operator
 {
-    HardwareSerial* serial; 
-    BluetoothSerial* bluetoothSerial;
+    DEBUG_PRINT_SERIAL* serial; 
     LiveDelay debugLiveDelay;
 
     // Program player
@@ -25,14 +24,18 @@ class Operator
     double requiredAlt; // the required altitude of the drone
     double currentAlt; // the curent altitude of the drone
     double hoverThrottle; // throttle
-    PID altPID = PID(&currentAlt, &hoverThrottle, &requiredAlt, (double)ALT_PID_P, (double)ALT_PID_I, (double)ALT_PID_D, P_ON_E, DIRECT);
+    PID altPID = PID(
+        &currentAlt, 
+        &hoverThrottle, 
+        &requiredAlt, 
+        (double)ALT_PID_P, 
+        (double)ALT_PID_I, 
+        (double)ALT_PID_D, 
+        P_ON_E, DIRECT);
     
     // state related 
     OPERATOR_STATE state; // the state of the operator
     void printState();
-    
-    // internal calculasions
-    uint16_t mapAltToThrottle(ALTITUDE_DATA); // map the altitude of the craft to throttle
 
     // boolean functions
     bool isAvailable() { return (state == IDLE_AIR || state == IDLE_GROUND); }
@@ -43,7 +46,7 @@ class Operator
     void land(uint64_t time);
 
 public:
-    void begin(HardwareSerial& _serial, BluetoothSerial& _bluetooth);
+    void begin(DEBUG_PRINT_SERIAL& _serial);
     void loop();
 
     bool arm();

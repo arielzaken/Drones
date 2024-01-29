@@ -6,22 +6,22 @@ void Operator::printState()
 {
     switch(state){
     case EMERGENCY_LANDING:
-        this->bluetoothSerial->println("EMERGENCY_LANDING");
+        this->serial->println("EMERGENCY_LANDING");
         break;
     case IDLE_GROUND:
-        this->bluetoothSerial->println("IDLE_GROUND");
+        this->serial->println("IDLE_GROUND");
         break;
     case IDLE_AIR:
-        this->bluetoothSerial->println("IDLE_AIR");
+        this->serial->println("IDLE_AIR");
         break;
     case ARM:
-        this->bluetoothSerial->println("ARM");
+        this->serial->println("ARM");
         break;
     case TAKE_OFF:
-        this->bluetoothSerial->println("TAKE_OFF");
+        this->serial->println("TAKE_OFF");
         break;
     default:
-        this->bluetoothSerial->println("UNKNOWN");
+        this->serial->println("UNKNOWN");
         break;
     }
 }
@@ -59,11 +59,10 @@ void Operator::land(uint64_t time)
 }
 
 /// @brief this func init the operator. (without delay to avoid BAD-RX-timeout)
-void Operator::begin(HardwareSerial& _serial, BluetoothSerial& _bluetooth)
+void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
 {
     // inisialize the serial object
     this->serial = &_serial;
-    this->bluetoothSerial = &_bluetooth;
 
     // begin the controller
     controller.begin();
@@ -79,7 +78,7 @@ void Operator::begin(HardwareSerial& _serial, BluetoothSerial& _bluetooth)
 
     // self arming
     if(arm())
-        this->bluetoothSerial->println("armed");
+        this->serial->println("armed");
 }
 
 void Operator::loop()
@@ -118,7 +117,7 @@ void Operator::loop()
             altPID.Compute();
             controller.setThrottle(1250 + hoverThrottle);
             if(debugLiveDelay.tryToActivate()){
-                this->bluetoothSerial->printf("thr: % 7.3f | alt: % 7.3f\n",1250 + hoverThrottle, currentAlt);
+                this->serial->printf("thr: % 7.3f | alt: % 7.3f\n",1250 + hoverThrottle, currentAlt);
                 printState();
             }
         }
@@ -163,6 +162,6 @@ void Operator::emergencyLanding()
     state = EMERGENCY_LANDING;
     ALTITUDE_DATA alt = controller.getAltitude();
     land();
-    this->bluetoothSerial->printf("emergency landing: alt = %d\n", alt.EstAlt);
+    this->serial->printf("emergency landing: alt = %d\n", alt.EstAlt);
     //controller.disconnect();
 }

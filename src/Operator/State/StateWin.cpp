@@ -1,8 +1,10 @@
 #include "StateWin.h"
 
-StateWin::StateWin(State *startState, Mission* _mission): currentState(startState), mission(_mission)
+StateWin::StateWin(State *startState, Mission* _mission): currentState(startState)
 {
-
+    if(_mission != nullptr)
+        mission = _mission;
+    
 }
 
 void StateWin::deleteStates(){
@@ -28,27 +30,27 @@ void StateWin::inisialize()
     State* gndState = new State("gnd", 
         [](){ // isOkToNext
             return false;
-        }, [](){ // loop
+        }, [](uint64_t time){ // loop
 
-        });
+        }, mission);
     State* takeOffState = new State("tof", 
         [](){ // isOkToNext
             return false;
-        }, [](){ // loop
-            
-        });
+        }, [](uint64_t time){ // loop
+
+        }, mission);
     State* inTransitState = new State("trn", 
         [](){ // isOkToNext
             return false;
-        }, [](){ // loop
+        }, [](uint64_t time){ // loop
 
-        });
+        }, mission);
     State* landState = new State("lnd", 
         [](){ // isOkToNext
             return false;
-        }, [](){ // loop
+        }, [](uint64_t time){ // loop
 
-        });
+        }, mission);
     gndState->setNextState(takeOffState);
     takeOffState->setNextState(inTransitState);
     inTransitState->setNextState(landState);
@@ -58,8 +60,10 @@ void StateWin::inisialize()
 
 void StateWin::loop()
 {
-    currentState->loop();
-    if(currentState->IsOkToNext())
+    currentState->loop(PP.getTime());
+    if(currentState->IsOkToNext()){
         currentState = currentState->getNextState();
+        PP.reset();
+    }
 
 }

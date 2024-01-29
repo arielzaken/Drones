@@ -4,6 +4,7 @@
 /****************
  * debug CONFIG *
  ***************/
+#define DEBUG_PRINT_SERIAL BluetoothSerial
 #define DEBUG_PRINT_DELAY 200
 
 

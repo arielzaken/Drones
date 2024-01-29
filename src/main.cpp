@@ -7,7 +7,7 @@ BluetoothSerial SerialBT;
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("clone_drone_in_the_danger_zone");
-  OP.begin(Serial, SerialBT);
+  OP.begin(SerialBT);
 }
 
 void loop() {
