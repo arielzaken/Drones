@@ -56,6 +56,7 @@ void StateWin::inisialize()
     inTransitState->setNextState(landState);
     landState->setNextState(gndState);
     currentState = gndState;
+int x =0;
 }
 
 void StateWin::loop()
