@@ -7,6 +7,10 @@
 #define DEBUG_PRINT_SERIAL BluetoothSerial
 #define DEBUG_PRINT_DELAY 200
 
+/*************************
+ * HEIGHT CHANNEL CONFIG *
+ ************************/
+#define HEIGHT_CHANNEL 400 // [cm] the height of the craft at transit
 
 /******************
  * ALT PID CONFIG *
@@ -20,9 +24,15 @@
 
 
 /******************
- * GPS CONFIG *
+ *   GPS CONFIG   *
  *****************/
-#define uint32_t ERROR_RADIUS = 300 // [cm] the error radius in which two locations are considered the same
+#define ERROR_RADIUS 300 // [cm] the error radius in which two locations are considered the same
+
+
+/*******************
+ * ALTITUDE CONFIG *
+ ******************/
+#define ALTITUDE_ERROR_RANGE 10 // [cm] the error radius in which the alttitude is equals
 
 
 /**************

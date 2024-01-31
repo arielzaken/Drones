@@ -1,4 +1,5 @@
 #include "StateWin.h"
+#include "Controller\Controller.h"
 
 StateWin::StateWin(Mission* _mission): currentState(nullptr)
 {
@@ -28,34 +29,38 @@ void StateWin::inisialize()
     if (currentState)
         deleteStates();
     State* gndState = new State("gnd", 
-        [](){ if(mission!=NULL) return true;// isOkToNext
-            return false;
-        }, [](uint64_t time){ // loop
-
+        [](Mission* mission){ // isOkToNext
+            return mission!=NULL;
+        }, [](uint64_t time, Mission* mission){ // loop
+            // TODO: check if there is a mission
         }, mission);
     State* takeOffState = new State("tof", 
-        [](){return(Controller.getAltitude.equalAltitude(requiredAlt)) // isOkToNext
-        }, [](uint64_t time){ // loop
-
+        [](Mission* mission){ // isOkToNext
+            return controller.getAltitude().equals(HEIGHT_CHANNEL);
+        }, [](uint64_t time, Mission* mission){ // loop
+            
         }, mission);
     State* inTransitState = new State("trn", 
-        [](){if(Controller.getRawGPS) // isOkToNext
-            return false;
-        }, [](uint64_t time){ // loop
+        [](Mission* mission){ // isOkToNext
+            
+            return Controller.getRawGPS();
 
+        }, [](uint64_t time, Mission* mission){ // loop
+            // TODO: check if there is a mission
         }, mission);
     State* landState = new State("lnd", 
-        [](){ // isOkToNext
+        [](Mission* mission){ // isOkToNext
+            
             return false;
-        }, [](uint64_t time){ // loop
-
+        }, [](uint64_t time, Mission* mission){ // loop
+            // TODO: check if there is a mission
         }, mission);
+
     gndState->setNextState(takeOffState);
     takeOffState->setNextState(inTransitState);
     inTransitState->setNextState(landState);
     landState->setNextState(gndState);
     currentState = gndState;
-int x =0;
 }
 
 void StateWin::loop()

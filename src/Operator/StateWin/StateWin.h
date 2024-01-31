@@ -1,6 +1,6 @@
 #ifndef STATE_WIN_H
 #define STATE_WIN_H
-#include "Operator\State\State.h"
+#include "Operator\StateWin\State.h"
 #include "Operator\Mission\Mission.h"
 #include "Operator\ProgramPlayer\ProgramPlayer.h"
 

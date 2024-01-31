@@ -1,10 +1,9 @@
 #ifndef MISSION_h
 #define MISSION_h
-#include "dev\GPS.hpp"
-
+#include "Controller/Controller.h"
 
 typedef struct Mission{
-    GPS_pos end_point;
+    RAW_GPS_DATA end_point;
 } Mission;
 
 #endif

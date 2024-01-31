@@ -56,7 +56,6 @@ public:
   uint16_t getPitch();
   uint16_t getYaw();
   uint16_t getAUX(uint8_t channel);
-  bool equalAltitude(int32_t alt);
 
   // reset the controller to the default settings
   void resetThrottle();
