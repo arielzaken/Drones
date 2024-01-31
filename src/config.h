@@ -1,10 +1,14 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
+#include <Arduino.h>
+#include <BluetoothSerial.h>
 
 /****************
  * debug CONFIG *
  ***************/
-#define DEBUG_PRINT_SERIAL BluetoothSerial
+#define DEBUG_PRINT_SERIAL HardwareSerial
+//#define DEBUG_PRINT_SERIAL BluetoothSerial
+
 #define DEBUG_PRINT_DELAY 200
 
 /*************************
@@ -16,7 +20,7 @@
  * ALT PID CONFIG *
  *****************/
 #define MAX_ALT 200 // [cm] the maximum altitude allowed for the craft
-#define H 5.0 // [m] the target altitude for the craft to hover over
+//#define H 5.0 // [m] the target altitude for the craft to hover over
 
 #define ALT_PID_P 5
 #define ALT_PID_I 0
@@ -63,5 +67,27 @@
 #define IBUS_CHANNELS_COUNT 14
 #define MIN_CONTROL_VALUE 1000
 #define MAX_CONTROL_VALUE 2000
+
+/*********************
+ * Controller CONFIG *
+ ********************/
+#define ARM_CHANNEL 4
+#define ARM_VAL 1800
+#define DISARM_VAL 1000
+#define ARM_DEFULATE_VALUE 1000
+
+#define ROLL_CHANNEL 0
+#define ROLL_DEFAULT_VALUE 1500
+
+#define PITCH_CHANNEL 1
+#define PITCH_DEFAULT_VALUE 1500
+
+#define YAW_CHANNEL 2
+#define YAW_DEFAULT_VALUE 1500
+
+#define THROTTLE_CHANNEL 3
+#define THROTTLE_DEFAULT_VALUE 1000
+
+#define AUX_DEFAULT_VALUE 1500
 
 #endif // _CONFIG_H

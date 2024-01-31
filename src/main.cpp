@@ -7,18 +7,14 @@ BluetoothSerial SerialBT;
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("clone_drone_in_the_danger_zone");
-  OP.begin(SerialBT);
+  OP.begin(Serial);
 }
 
 void loop() {
   if(SerialBT.available())
     switch((char)SerialBT.read()){
     case 't':
-      OP.takeOff();
-      break;
-    case 'a':
-      if(OP.arm())
-        SerialBT.println("armed");
+      OP.setMission(Mission());
       break;
     case 'e':
       OP.emergencyLanding();

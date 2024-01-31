@@ -3,147 +3,156 @@
 Controller controller;
 
 void Controller::begin(){
-  msp.begin(Serial2);
-  ibus.begin(Serial1, 4, 2);
-  resetChannels();
-  altData.lDelay.setDelay(50);
-  attData.lDelay.setDelay(20);
-  comData.lDelay.setDelay(20);
-  rawData.lDelay.setDelay(20);
-  analogData.lDelay.setDelay(20);
+	msp.begin(Serial2);
+	ibus.begin(Serial1, 4, 2);
+	resetChannels();
+	altData.lDelay.setDelay(50);
+	attData.lDelay.setDelay(20);
+	comData.lDelay.setDelay(20);
+	rawData.lDelay.setDelay(20);
+	analogData.lDelay.setDelay(20);
+	//PID setup
+    altPID.SetMode(AUTOMATIC);
+    altPID.SetOutputLimits((double)-100, (double)100);
 }
 
 void Controller::loop(){
-  ibus.loop();
+	getAltitude();
+	if(altPIDEnabled){
+		currentAlt = altData.EstAlt/100.f; // in meters
+  		altPID.Compute();
+    	setThrottle(1250 + hoverThrottle);
+	}
+  	ibus.loop();
 }
 
 void Controller::disconnect()
 {
-  ibus.disable();
+  	ibus.disable();
 }
 
 void Controller::connect()
 {
-  ibus.enable();
+  	ibus.enable();
 }
 
 void Controller::setAUX(uint8_t channel, uint16_t val){
-  if(channel > 0 && channel < IBUS_CHANNELS_COUNT-3)
-    ibus.setChannel(channel+3,val);
+  	if(channel > 0 && channel < IBUS_CHANNELS_COUNT-3)
+    	ibus.setChannel(channel+3,val);
 }
 
 uint16_t Controller::getThrottle()
 {
-  return ibus.getChannel(THROTTLE_CHANNEL);
+  	return ibus.getChannel(THROTTLE_CHANNEL);
 }
 
 uint16_t Controller::getRoll()
 {
-  return ibus.getChannel(ROLL_CHANNEL);
+  	return ibus.getChannel(ROLL_CHANNEL);
 }
 
 uint16_t Controller::getPitch()
 {
-  return ibus.getChannel(PITCH_CHANNEL);
+  	return ibus.getChannel(PITCH_CHANNEL);
 }
 
 uint16_t Controller::getYaw()
 {
-  return ibus.getChannel(YAW_CHANNEL);
+  	return ibus.getChannel(YAW_CHANNEL);
 }
 
 uint16_t Controller::getAUX(uint8_t channel)
 {
-  return ibus.getChannel(channel+3);
+  	return ibus.getChannel(channel+3);
 }
 
 void Controller::resetThrottle(){
-  setThrottle(THROTTLE_DEFAULT_VALUE);
+  	setThrottle(THROTTLE_DEFAULT_VALUE);
 }
 
 void Controller::resetRoll(){
-  setRoll(ROLL_DEFAULT_VALUE);
+  	setRoll(ROLL_DEFAULT_VALUE);
 }
 
 void Controller::resetPitch(){
-  setPitch(PITCH_DEFAULT_VALUE);
+  	setPitch(PITCH_DEFAULT_VALUE);
 }
 
 void Controller::resetYaw(){
-  setYaw(YAW_DEFAULT_VALUE);
+  	setYaw(YAW_DEFAULT_VALUE);
 }
 
 void Controller::resetAUX(uint8_t channel){
-  setAUX(channel, AUX_DEFAULT_VALUE);
+  	setAUX(channel, AUX_DEFAULT_VALUE);
 }
 
 void Controller::resetChannels(){
-  resetThrottle();
-  resetPitch();
-  resetRoll();
-  resetYaw();
-  disarm();
-  for(uint8_t i=2; i<IBUS_CHANNELS_COUNT-3; i++)
-    resetAUX(i);
+	resetThrottle();
+	resetPitch();
+	resetRoll();
+	resetYaw();
+	disarm();
+	for(uint8_t i=2; i<IBUS_CHANNELS_COUNT-3; i++)
+		resetAUX(i);
 }
 
 
 void Controller::arm(){
   //TODO: check if there isent somthing in the way.
-  armFlag = true; 
-  ibus.setChannel(ARM_CHANNEL, ARM_VAL);
+	armFlag = true; 
+	ibus.setChannel(ARM_CHANNEL, ARM_VAL);
 }
 
 void Controller::disarm(){
-  armFlag = false; 
-  ibus.setChannel(ARM_CHANNEL, DISARM_VAL);
+	armFlag = false; 
+	ibus.setChannel(ARM_CHANNEL, DISARM_VAL);
 }
 
 void Controller::setRoll(uint16_t roll){
-  ibus.setChannel(ROLL_CHANNEL, roll);
+  	ibus.setChannel(ROLL_CHANNEL, roll);
 }
 
 void Controller::setPitch(uint16_t pit){
-  ibus.setChannel(PITCH_CHANNEL, pit);
+ 	ibus.setChannel(PITCH_CHANNEL, pit);
 }
 
 void Controller::setYaw(uint16_t yaw){
-  ibus.setChannel(YAW_CHANNEL, yaw);
+  	ibus.setChannel(YAW_CHANNEL, yaw);
 }
 
 void Controller::setThrottle(uint16_t tho){
-  ibus.setChannel(THROTTLE_CHANNEL, tho);
+  	ibus.setChannel(THROTTLE_CHANNEL, tho);
 }
 
 ALTITUDE_DATA Controller::getAltitude(){
-  if(altData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendMSPFromFC(MSP_ALTITUDE);
-    if(mspAns.valid){
-      altData.EstAlt = mspAns.data[0] | mspAns.data[1] << 8 | mspAns.data[2] << 16 | mspAns.data[3] << 24 ;
-      altData.vario = mspAns.data[4] | mspAns.data[5] << 8;
-    }
-  }
-  return altData;
+	if(altData.lDelay.tryToActivate()){
+		MspAnswer mspAns = msp.sendMSPFromFC(MSP_ALTITUDE);
+		if(mspAns.valid){
+		altData.EstAlt = mspAns.data[0] | mspAns.data[1] << 8 | mspAns.data[2] << 16 | mspAns.data[3] << 24 ;
+		altData.vario = mspAns.data[4] | mspAns.data[5] << 8;
+		}
+	}
+	return altData;
 }
 
 ANALOG_DATA Controller::getAnalog()
 {
-  if(analogData.lDelay.tryToActivate()){
-    MspAnswer mspAns = msp.sendMSPFromFC(MSP_ANALOG);
-    if(mspAns.valid){
-      analogData.vbat = mspAns.data[0];
-      analogData.intPowerMeterSum = mspAns.data[1] | mspAns.data[2] << 8;
-      analogData.rssi = mspAns.data[3] | mspAns.data[4] << 8;
-      analogData.amperage = mspAns.data[5] | mspAns.data[6] << 8;
-    }
-  }
-  return analogData;
+	if(analogData.lDelay.tryToActivate()){
+		MspAnswer mspAns = msp.sendMSPFromFC(MSP_ANALOG);
+		if(mspAns.valid){
+		analogData.vbat = mspAns.data[0];
+		analogData.intPowerMeterSum = mspAns.data[1] | mspAns.data[2] << 8;
+		analogData.rssi = mspAns.data[3] | mspAns.data[4] << 8;
+		analogData.amperage = mspAns.data[5] | mspAns.data[6] << 8;
+		}
+	}
+	return analogData;
 }
 
 bool Controller::accCalibration()
 {
-  MspAnswer mspAns = msp.sendMSPToFC(MSP_ACC_CALIBRATION,NULL,0);
-  return mspAns.valid;
+	MspAnswer mspAns = msp.sendMSPToFC(MSP_ACC_CALIBRATION,NULL,0);
+	return mspAns.valid;
 }
 
 RAW_GPS_DATA Controller::getRawGPS()

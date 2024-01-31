@@ -3,18 +3,31 @@
 #include "Operator\StateWin\State.h"
 #include "Operator\Mission\Mission.h"
 #include "Operator\ProgramPlayer\ProgramPlayer.h"
+#include "config.h"
+
+struct Node{
+    State state;
+    Node* next;
+    Node(const State& _state, Node* _next):state(_state), next(_next){};
+};
 
 class StateWin
 {
-    State* currentState;
+    Node* head;
+    Node* currentNode;
     Mission* mission;
+    DEBUG_PRINT_SERIAL* serial;
     ProgramPlayer PP;
     void deleteStates();
 public:
-    StateWin(Mission* _mission);
+    StateWin();
+    StateWin(Mission* _mission, DEBUG_PRINT_SERIAL* serial = nullptr);
     ~StateWin();
-    void inisialize();
+    void insert(const State &state);
+    void next();
+    void reset();
     void loop();
+    void printState();
 };
 
 #endif

@@ -18,7 +18,7 @@ typedef struct RAW_GPS_DATA : MSP_DATA{
   uint16_t GPS_altitude; // the aprocsemated altetude [m]
   uint16_t GPS_speed;    // the speed of the craft       [cm/s]
   uint16_t GPS_ground_course; // i really dont know.. unit: degree*10
-  bool isEqual(const RAW_GPS_DATA& otherPoint){
+  bool equals(const RAW_GPS_DATA& otherPoint){
     return (abs(acos(sin(this->GPS_cord_lat)*sin(otherPoint.GPS_cord_lat)+
     cos(this->GPS_cord_lat)*cos(otherPoint.GPS_cord_lat)*cos(otherPoint.GPS_cord_lon-(this->GPS_cord_lat)))*6371)/100000>=ERROR_RADIUS);
   }
