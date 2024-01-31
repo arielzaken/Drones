@@ -11,7 +11,7 @@ class StateWin
     ProgramPlayer PP;
     void deleteStates();
 public:
-    StateWin(State* startState, Mission* _mission);
+    StateWin(Mission* _mission);
     ~StateWin();
     void inisialize();
     void loop();

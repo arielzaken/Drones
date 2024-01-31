@@ -1,6 +1,6 @@
 #include "StateWin.h"
 
-StateWin::StateWin(State *startState, Mission* _mission): currentState(startState)
+StateWin::StateWin(Mission* _mission): currentState(nullptr)
 {
     if(_mission != nullptr)
         mission = _mission;

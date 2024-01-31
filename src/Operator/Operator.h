@@ -3,9 +3,11 @@
 #define OPERATOR_H
 
 #include "Controller/Controller.h"
+#include "Operator/Mission/Mission.h"
 #include "ProgramPlayer/ProgramPlayer.h"
 #include "algorithems/PID/PID_v1.h"
 #include "BluetoothSerial.h"
+#include "Operator/State/StateWin.h"
 #include "config.h"
 
 
@@ -15,9 +17,6 @@ class Operator
 {
     DEBUG_PRINT_SERIAL* serial; 
     LiveDelay debugLiveDelay;
-
-    // Program player
-    ProgramPlayer PP;
 
     // throttel PID vars
     // TODO: implement a struct for PID variables
@@ -34,11 +33,9 @@ class Operator
         P_ON_E, DIRECT);
     
     // state related 
-    OPERATOR_STATE state; // the state of the operator
+    Mission mission;
+    StateWin winState = StateWin(&mission); // the state of the operator
     void printState();
-
-    // boolean functions
-    bool isAvailable() { return (state == IDLE_AIR || state == IDLE_GROUND); }
 
     // programs functions
     void takeOff(uint64_t time); // a privet function for takeoff 
