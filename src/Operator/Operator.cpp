@@ -7,57 +7,74 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
 {
     // inisialize the serial object
     this->serial = &_serial;
-
+    this->serial->println("Operator is online!");
     // begin the controller
     controller.begin();
 
     // initialize the debugLiveDelay
     debugLiveDelay.setDelay(DEBUG_PRINT_DELAY);
 
-    stateWin = StateWin(&mission, serial);
+    stateWin.setup(&mission, this->serial);
+
     stateWin.insert(State("gnd",
-        [](uint64_t time, Mission* mission){
-            if(time<=1000)
+        [this](uint64_t time, Mission* mission){
+            if(time<=1000){
                 controller.disableHover();
+                controller.disarm();
+            }
+            if(mission->valid){
+                this->stateWin.next();
+            }
+        }
+        ,&mission));
+    
+    
+    stateWin.insert(State("arm",
+        [this](uint64_t time, Mission* mission){
+            if(time < 200){
+                controller.disarm();
+            }
+            else if(7000 <= time && time < 9000){
+                controller.arm();
+            }
+            else if(9000 <= time){
+                stateWin.next();
+            }
         }
     ,&mission));
 
     stateWin.insert(State("tof",
-        [](uint64_t time, Mission* mission){
-            if(time<=1000 && time >= 800){
-                controller.disarm();
+        [this](uint64_t time, Mission* mission){
+            if(time<=200){
+                controller.enableHover();
+                controller.setReqAlt((double)(HEIGHT_CHANNEL/100));
             }
-            else if(time>=7000){
-                controller.arm(); 
-
+            if(controller.getAltitude().equals(HEIGHT_CHANNEL)){
+                stateWin.next();
             }
         }
     ,&mission));
 
     stateWin.insert(State("trn",
-        [](uint64_t time, Mission* mission){
-            if(time<=1000 && time >= 800){
-                controller.disarm();
-            }
-            else if(time>=7000){
-                controller.arm(); 
-
-            }
+        [this](uint64_t time, Mission* mission){
+            if(time > 4000)
+                stateWin.next();
         }
     ,&mission));
 
     stateWin.insert(State("lnd",
-        [](uint64_t time, Mission* mission){
-            if(time<=1000 && time >= 800){
-                controller.disarm();
+        [this](uint64_t time, Mission* mission){
+            if(time <= 200){
+                controller.setReqAlt((double)(0));
             }
-            else if(time>=7000){
-                controller.arm(); 
-
+            else if(controller.getAltitude().equals(HEIGHT_CHANNEL)){
+                controller.disarm(); 
+                mission->valid = false;
+                stateWin.next();
             }
         }
     ,&mission));
-
+    
     stateWin.reset();
 }
 
@@ -72,7 +89,7 @@ void Operator::loop()
     stateWin.loop();
     
     if(debugLiveDelay.tryToActivate()){
-        this->serial->printf("thr: % 7.3f | alt: % 7.3f\n", controller.getThrottle(), alt.EstAlt);
+        this->serial->printf("thr: %u | alt: %d ", controller.getThrottle(), alt.EstAlt);
         stateWin.printState();
     }
     controller.loop();

@@ -1,18 +1,6 @@
 #include "StateWin.h"
 #include "Controller\Controller.h"
 
-StateWin::StateWin(): head(nullptr), currentNode(nullptr) {}
-
-StateWin::StateWin(Mission *_mission, DEBUG_PRINT_SERIAL *serial) : head(nullptr), currentNode(nullptr)
-{
-    if(_mission != nullptr)
-        mission = _mission;
-    else{
-        if(serial)
-            serial->printf("ERROR: Invalid mission pointer");
-    }
-}
-
 void StateWin::deleteStates(){
     Node* delPointer = head->next;
     while(delPointer != head){
@@ -27,6 +15,18 @@ void StateWin::deleteStates(){
 StateWin::~StateWin()
 {
     deleteStates();
+}
+
+void StateWin::setup(Mission *_mission, DEBUG_PRINT_SERIAL *_serial)
+{
+    this->serial = _serial;
+    this->serial->println("StateWin constructor");
+    if(_mission != nullptr)
+        mission = _mission;
+    else{
+        this->serial->printf("ERROR: Invalid mission pointer");
+    }
+    PP.reset();
 }
 
 void StateWin::insert(const State& state)
@@ -44,7 +44,8 @@ void StateWin::insert(const State& state)
 
 void StateWin::next()
 {
-    head = head->next;
+    this->serial->println("Next!");
+    currentNode = currentNode->next;
     PP.reset();
 }
 
@@ -55,11 +56,14 @@ void StateWin::reset()
 
 void StateWin::loop()
 {
-    currentNode->state.loop(PP.getTime());
+    if(currentNode)
+        currentNode->state.loop(PP.getTime());
 }
 
 void StateWin::printState()
 {
-    if(serial)
-        serial->printf("state: %s\n", currentNode->state.getName());
+    if(currentNode){
+        this->serial->printf("state: %s\n", currentNode->state.getName());
+    }else
+        this->serial->println("state: NULL");
 }

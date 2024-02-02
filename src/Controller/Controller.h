@@ -49,7 +49,7 @@ public:
 	void setPitch(uint16_t pit);
 	void setYaw(uint16_t pit);
 	void setAUX(uint8_t channel, uint16_t val);
-	void setReqAlt(double& reqAlt){requiredAlt = reqAlt;}
+	void setReqAlt(double reqAlt){requiredAlt = reqAlt;}
 
 	// getters for controller
 	uint16_t getThrottle();

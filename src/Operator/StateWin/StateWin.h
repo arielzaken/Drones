@@ -20,9 +20,8 @@ class StateWin
     ProgramPlayer PP;
     void deleteStates();
 public:
-    StateWin();
-    StateWin(Mission* _mission, DEBUG_PRINT_SERIAL* serial = nullptr);
     ~StateWin();
+    void setup(Mission* _mission, DEBUG_PRINT_SERIAL* serial);
     void insert(const State &state);
     void next();
     void reset();

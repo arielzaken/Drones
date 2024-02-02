@@ -7,18 +7,18 @@ class State
 {
     char name[4];
     Mission* mission;
-    void (*ptrLoop)(uint64_t time, Mission* mission);
+    std::function<void(uint64_t, Mission*)> loopFunc;
 public:
     /**
      * @param name the name of the state 3 lettrs
-     * @param ptrIsOkToNext the function to be called when i want to go to the next state. gets the pointer to the mission
-     * @param ptrLoop the function to be called when i want to loop. gets the pointer to the mission 
+     * @param loopFunc the function to be called when i want to loop. gets the pointer to the mission 
      * @param mission a pointer to the mission
     */
     State(
         const char* name,
-        void (*ptrLoop)(uint64_t time, Mission* mission),
+        std::function<void(uint64_t, Mission*)> loopFunc,
         Mission* mission);
+public:
     char* getName() { return name; }
     void loop(uint64_t time);
 };
