@@ -90,4 +90,12 @@
 
 #define AUX_DEFAULT_VALUE 1500
 
+/******************
+ * transit CONFIG *
+ *****************/
+#define STOP_YAW 1500
+#define FORWARD_YAW STOP_YAW + 40
+#define BACKWARDS_YAW STOP_YAW - 40
+
+
 #endif // _CONFIG_H

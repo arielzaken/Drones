@@ -57,7 +57,9 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
 
     stateWin.insert(State("trn",
         [this](uint64_t time, Mission* mission){
-            if(time > 4000)
+            /*if(time < 200)
+                controller.setYaw(FORWARD_YAW);*/
+            if(controller.getRawGPS().equals(mission->end_point))
                 stateWin.next();
         }
     ,&mission));
@@ -67,7 +69,7 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
             if(time <= 200){
                 controller.setReqAlt((double)(0));
             }
-            else if(controller.getAltitude().equals(HEIGHT_CHANNEL)){
+            else if(controller.getAltitude().equals(0)){
                 controller.disarm(); 
                 mission->valid = false;
                 stateWin.next();
