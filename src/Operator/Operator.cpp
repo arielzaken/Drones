@@ -32,6 +32,7 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
     stateWin.insert(State("arm",
         [this](uint64_t time, Mission* mission){
             if(time < 200){
+                controller.setThrottle(1000);
                 controller.disarm();
             }
             else if(7000 <= time && time < 9000){
@@ -57,7 +58,11 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
 
     stateWin.insert(State("trn",
         [this](uint64_t time, Mission* mission){
-            if(time > 4000)
+            /*if(time < 200)
+                controller.setYaw(FORWARD_YAW);*/
+            /*if(controller.getRawGPS().equals(mission->end_point))
+            */
+            if(time >= 10000)
                 stateWin.next();
         }
     ,&mission));
@@ -67,7 +72,7 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
             if(time <= 200){
                 controller.setReqAlt((double)(0));
             }
-            else if(controller.getAltitude().equals(HEIGHT_CHANNEL)){
+            else if(controller.getAltitude().equals(0)){
                 controller.disarm(); 
                 mission->valid = false;
                 stateWin.next();
@@ -100,5 +105,5 @@ void Operator::emergencyLanding()
     //state = EMERGENCY_LANDING;
     ALTITUDE_DATA alt = controller.getAltitude();
     this->serial->printf("emergency landing: alt = %d\n", alt.EstAlt);
-    //controller.disconnect();
+    controller.disconnect();
 }

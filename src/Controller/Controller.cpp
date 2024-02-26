@@ -13,7 +13,7 @@ void Controller::begin(){
 	analogData.lDelay.setDelay(20);
 	//PID setup
     altPID.SetMode(AUTOMATIC);
-    altPID.SetOutputLimits((double)-100, (double)100);
+    altPID.SetOutputLimits((double)(-LIMIT), (double)LIMIT);
 }
 
 void Controller::loop(){

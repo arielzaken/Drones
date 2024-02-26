@@ -6,26 +6,27 @@
 /****************
  * debug CONFIG *
  ***************/
-#define DEBUG_PRINT_SERIAL HardwareSerial
-//#define DEBUG_PRINT_SERIAL BluetoothSerial
+//#define DEBUG_PRINT_SERIAL HardwareSerial
+#define DEBUG_PRINT_SERIAL BluetoothSerial
 
 #define DEBUG_PRINT_DELAY 200
 
 /*************************
  * HEIGHT CHANNEL CONFIG *
  ************************/
-#define HEIGHT_CHANNEL 400 // [cm] the height of the craft at transit
+#define HEIGHT_CHANNEL 200 // [cm] the height of the craft at transit
 
 /******************
  * ALT PID CONFIG *
  *****************/
-#define MAX_ALT 200 // [cm] the maximum altitude allowed for the craft
+#define MAX_ALT 400 // [cm] the maximum altitude allowed for the craft
 //#define H 5.0 // [m] the target altitude for the craft to hover over
 
-#define ALT_PID_P 5
-#define ALT_PID_I 0
-#define ALT_PID_D 0
+#define ALT_PID_P 8
+#define ALT_PID_I 4
+#define ALT_PID_D 2
 
+#define LIMIT 100
 
 /******************
  *   GPS CONFIG   *
@@ -36,7 +37,7 @@
 /*******************
  * ALTITUDE CONFIG *
  ******************/
-#define ALTITUDE_ERROR_RANGE 10 // [cm] the error radius in which the alttitude is equals
+#define ALTITUDE_ERROR_RANGE 25 // [cm] the error radius in which the alttitude is equals
 
 
 /**************
@@ -89,5 +90,13 @@
 #define THROTTLE_DEFAULT_VALUE 1000
 
 #define AUX_DEFAULT_VALUE 1500
+
+/******************
+ * transit CONFIG *
+ *****************/
+#define STOP_YAW 1500
+#define FORWARD_YAW STOP_YAW + 40
+#define BACKWARDS_YAW STOP_YAW - 40
+
 
 #endif // _CONFIG_H
