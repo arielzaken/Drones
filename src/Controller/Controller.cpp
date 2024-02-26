@@ -155,6 +155,13 @@ bool Controller::accCalibration()
 	return mspAns.valid;
 }
 
+uint16_t Controller::getSensorAlt()
+{
+	if(altSensor.waitRangeComplete())
+		return altSensor.readRangeResult();
+	return 0xffff;
+}
+
 RAW_GPS_DATA Controller::getRawGPS()
 {
   if(rawData.lDelay.tryToActivate()){

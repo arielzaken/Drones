@@ -1,18 +1,18 @@
 #include <Arduino.h>
 #include "Operator/Operator.h"
-//#include "BluetoothSerial.h"
+#include "BluetoothSerial.h"
 
 BluetoothSerial SerialBT;
 
 void setup() {
 	Serial.begin(115200);
-	//SerialBT.begin("clone_drone_in_the_danger_zone");
-	OP.begin(Serial);
+	SerialBT.begin("clone_drone_in_the_danger_zone");
+	OP.begin(SerialBT);
 }
 
 void loop() {
-	if(Serial.available())
-		switch((char)Serial.read()){
+	if(SerialBT.available())
+		switch((char)SerialBT.read()){
 		case 't':
 			{
 				Mission mission;

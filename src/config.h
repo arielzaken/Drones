@@ -22,9 +22,9 @@
 #define MAX_ALT 400 // [cm] the maximum altitude allowed for the craft
 //#define H 5.0 // [m] the target altitude for the craft to hover over
 
-#define ALT_PID_P 8
-#define ALT_PID_I 4
-#define ALT_PID_D 2
+#define ALT_PID_P 10
+#define ALT_PID_I 2
+#define ALT_PID_D 1
 
 #define LIMIT 100
 
@@ -37,8 +37,9 @@
 /*******************
  * ALTITUDE CONFIG *
  ******************/
-#define ALTITUDE_ERROR_RANGE 25 // [cm] the error radius in which the alttitude is equals
-
+#define ALTITUDE_ERROR_RANGE 25     // [cm] the error radius in which the alttitude is equals
+#define LAND_DECREACE_RATE 0.1      // [m] 
+#define LAND_DISABLE_MOTORS_HEIGHT 50 // [mm]
 
 /**************
  * MSP CONFIG *

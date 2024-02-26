@@ -77,6 +77,14 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
                 mission->valid = false;
                 stateWin.next();
             }
+            /*
+            controller.setReqAlt((double)(controller.getPIDAlt() - LAND_DECREACE_RATE));
+            if(controller.getSensorAlt() <= LAND_DISABLE_MOTORS_HEIGHT){
+                controller.disarm();
+                mission->valid = false;
+                stateWin.next();
+            }
+            */
         }
     ,&mission));
     

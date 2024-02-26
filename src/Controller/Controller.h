@@ -6,6 +6,7 @@
 #include "mspDataFormat.h"
 #include "algorithems/PID/PID_v1.h"
 #include "config.h"
+#include <Adafruit_VL53L0X.h>
 
 class Controller{
 	ALTITUDE_DATA altData;
@@ -13,6 +14,8 @@ class Controller{
 	COMP_GPS_DATA comData;
 	RAW_GPS_DATA rawData;
 	ANALOG_DATA analogData;
+
+	Adafruit_VL53L0X altSensor;
 
 	bool armFlag = false;
 	double requiredAlt; // [m] the required altitude of the drone
@@ -38,11 +41,13 @@ public:
 
 	void enableHover(){altPIDEnabled = true;}
 	void disableHover(){altPIDEnabled = false;}
+	double getPIDAlt(){ return currentAlt; }
 
 	// arm commands
 	void arm();
 	void disarm();
 	bool isArmed() {return armFlag;};
+
 	// setters for controller
 	void setThrottle(uint16_t thr);
 	void setRoll(uint16_t roll);
@@ -75,6 +80,8 @@ public:
 
 	// setters for the controller
 	bool accCalibration();
+
+	uint16_t getSensorAlt();
 };
 
 
