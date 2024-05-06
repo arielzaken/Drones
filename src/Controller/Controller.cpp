@@ -21,7 +21,7 @@ void Controller::loop(){
 	if(altPIDEnabled){
 		currentAlt = altData.EstAlt/100.f; // in meters
   		altPID.Compute();
-    	setThrottle(1250 + hoverThrottle);
+    	setThrottle(BASE_THROTTLE + hoverThrottle);
 	}
   	ibus.loop();
 }
@@ -96,9 +96,14 @@ void Controller::resetChannels(){
 		resetAUX(i);
 }
 
+void Controller::setAltPIDTunings(double P, double I, double D)
+{
+	this->altPID.SetTunings(P, I, D);
+}
 
-void Controller::arm(){
-  //TODO: check if there isent somthing in the way.
+void Controller::arm()
+{
+    // TODO: check if there isent somthing in the way.
 	armFlag = true; 
 	ibus.setChannel(ARM_CHANNEL, ARM_VAL);
 }

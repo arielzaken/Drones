@@ -22,11 +22,24 @@
 #define MAX_ALT 400 // [cm] the maximum altitude allowed for the craft
 //#define H 5.0 // [m] the target altitude for the craft to hover over
 
-#define ALT_PID_P 10
-#define ALT_PID_I 2
-#define ALT_PID_D 1
+#define TOF_PID_P 10
+#define TOF_PID_I 1
+#define TOF_PID_D 1
+#define TOF_PID TOF_PID_P, TOF_PID_I, TOF_PID_D
+
+#define TRN_PID_P 8
+#define TRN_PID_I 1
+#define TRN_PID_D 6
+#define TRN_PID TRN_PID_P, TRN_PID_I, TRN_PID_D
+
+#define LND_PID_P 8
+#define LND_PID_I 2
+#define LND_PID_D 5
+#define LND_PID LND_PID_P, LND_PID_I, LND_PID_D
 
 #define LIMIT 100
+
+#define BASE_THROTTLE 1260
 
 /******************
  *   GPS CONFIG   *
@@ -37,7 +50,7 @@
 /*******************
  * ALTITUDE CONFIG *
  ******************/
-#define ALTITUDE_ERROR_RANGE 25     // [cm] the error radius in which the alttitude is equals
+#define ALTITUDE_ERROR_RANGE 20     // [cm] the error radius in which the alttitude is equals
 #define LAND_DECREACE_RATE 0.1      // [m] 
 #define LAND_DISABLE_MOTORS_HEIGHT 50 // [mm]
 

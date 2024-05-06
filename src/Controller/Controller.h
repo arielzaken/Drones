@@ -27,9 +27,9 @@ class Controller{
 		&currentAlt, 
 		&hoverThrottle, 
 		&requiredAlt, 
-		(double)ALT_PID_P, 
-		(double)ALT_PID_I, 
-		(double)ALT_PID_D, 
+		(double)TOF_PID_P, 
+		(double)TOF_PID_I, 
+		(double)TOF_PID_D, 
 		P_ON_E, DIRECT);
 
 public:
@@ -42,6 +42,7 @@ public:
 	void enableHover(){altPIDEnabled = true;}
 	void disableHover(){altPIDEnabled = false;}
 	double getPIDAlt(){ return currentAlt; }
+	void setAltPIDTunings(double P, double I,double D);
 
 	// arm commands
 	void arm();

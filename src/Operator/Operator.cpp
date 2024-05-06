@@ -47,6 +47,7 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
     stateWin.insert(State("tof",
         [this](uint64_t time, Mission* mission){
             if(time<=200){
+                controller.setAltPIDTunings(TOF_PID);
                 controller.enableHover();
                 controller.setReqAlt((double)(HEIGHT_CHANNEL/100));
             }
@@ -58,11 +59,11 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
 
     stateWin.insert(State("trn",
         [this](uint64_t time, Mission* mission){
-            /*if(time < 200)
-                controller.setYaw(FORWARD_YAW);*/
+            if(time < 20)
+                controller.setAltPIDTunings(TRN_PID);
             /*if(controller.getRawGPS().equals(mission->end_point))
             */
-            if(time >= 10000)
+            if(time >= 20000)
                 stateWin.next();
         }
     ,&mission));
@@ -70,6 +71,7 @@ void Operator::begin(DEBUG_PRINT_SERIAL& _serial)
     stateWin.insert(State("lnd",
         [this](uint64_t time, Mission* mission){
             if(time <= 200){
+                controller.setAltPIDTunings(LND_PID);
                 controller.setReqAlt((double)(0));
             }
             else if(controller.getAltitude().equals(0)){
@@ -98,7 +100,6 @@ void Operator::loop()
 
     if(controller.isArmed() && alt.equals(MAX_ALT))
         emergencyLanding();     
-
     stateWin.loop();
     
     if(debugLiveDelay.tryToActivate()){
@@ -110,8 +111,9 @@ void Operator::loop()
 
 void Operator::emergencyLanding()
 {
-    //state = EMERGENCY_LANDING;
-    ALTITUDE_DATA alt = controller.getAltitude();
-    this->serial->printf("emergency landing: alt = %d\n", alt.EstAlt);
-    controller.disconnect();
+    controller.setThrottle(1250);
+    if(debugLiveDelay.tryToActivate()){
+        ALTITUDE_DATA alt = controller.getAltitude();
+        this->serial->printf("emergency landing: alt = %d\n", alt.EstAlt);
+    }
 }
