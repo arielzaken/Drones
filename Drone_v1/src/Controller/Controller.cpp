@@ -145,10 +145,10 @@ ANALOG_DATA Controller::getAnalog()
 	if(analogData.lDelay.tryToActivate()){
 		MspAnswer mspAns = msp.sendMSPFromFC(MSP_ANALOG);
 		if(mspAns.valid){
-		analogData.vbat = mspAns.data[0];
-		analogData.intPowerMeterSum = mspAns.data[1] | mspAns.data[2] << 8;
-		analogData.rssi = mspAns.data[3] | mspAns.data[4] << 8;
-		analogData.amperage = mspAns.data[5] | mspAns.data[6] << 8;
+			analogData.vbat = mspAns.data[0];
+			analogData.intPowerMeterSum = mspAns.data[1] | mspAns.data[2] << 8;
+			analogData.rssi = mspAns.data[3] | mspAns.data[4] << 8;
+			analogData.amperage = mspAns.data[5] | mspAns.data[6] << 8;
 		}
 	}
 	return analogData;
