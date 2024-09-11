@@ -1,3 +1,4 @@
+#pragma once
 #include "Operator/Behavior_I.h"
 #include "DroneController/DroneControllerInterface.h"
 #include "config.h"
