@@ -1,7 +1,7 @@
 #pragma once
 #include "Operator/Operator/States.h"
 #include "Operator/Stabilizer.h"
-
+class State_I;
 /**
  * this class represents the context in the state design pattern
  */
