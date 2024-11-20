@@ -21,6 +21,7 @@ uint8_t Stabilizer::addBehavior(Behavior_I &behavior)
             }
         }
     }
+    return 0;
 }
 
 void Stabilizer::removeBehavior(uint8_t discriptor)
