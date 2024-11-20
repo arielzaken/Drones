@@ -42,7 +42,7 @@ SensorCashProxy<T>::SensorCashProxy(Sensor_I<T> &_m_pSensor, uint16_t _spoilTime
     : m_pSensor(&_m_pSensor), spoilTime(_spoilTime) {
     // Create task for proxy loop
     sensor_loop_args_t<T>* args = new sensor_loop_args_t<T>{&_m_pSensor, _spoilTime, &data};
-    //xTaskCreate(proxyLoop, "Proxy Loop", 2048, args, 1, nullptr);
+    xTaskCreate(proxyLoop, "Proxy Loop", 2048, args, 1, nullptr);
 }
 
 template <typename T>

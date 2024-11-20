@@ -1,21 +1,42 @@
 #include "Behaviors.h"
+#include <esp32-hal-timer.h>
+Twist TakeoffBehavior::calcBehavior()
+{ 
+    int32_t height = sensor->read();
+    if(height < 20)
+        oldTwist.v.z = ((millis() - startTime) / 1000);
 
-Twist TakeoffBehavior::calcBehavior(Twist twist)
+    return oldTwist;
+}
+
+void TakeoffBehavior::setup()
+{
+    startTime = millis();
+}
+
+Twist LandBehavior::calcBehavior()
+{
+    return Twist(vec3D(0,0,-1), 0);
+}
+
+void LandBehavior::setup()
+{
+}
+
+Twist TransitBehavior::calcBehavior()
 {
     return Twist();
 }
 
-Twist LandBehavior::calcBehavior(Twist twist)
+void TransitBehavior::setup()
 {
-    return Twist();
 }
 
-Twist TransitBehavior::calcBehavior(Twist twist)
+Twist CollisionAvoidanceBehavior::calcBehavior()
 {
-    return Twist();
+    return Twist(vec3D(1, 2, 3), 0);
 }
 
-Twist CollisionAvoidanceBehavior::calcBehavior(Twist twist)
+void CollisionAvoidanceBehavior::setup()
 {
-    return Twist();
 }

@@ -7,9 +7,8 @@ class Stabilizer
     Behavior_I* behaviors[STABILIZER_NUM_OF_BEHAVIORS];
     uint8_t numOfBehaviors = 0;
     DroneControllerInterface* DroneController;
-    
 public:
-    void calcBehaviors();
+    Twist calcTwist();
     /**
      * add a new behavior mid-run to the stablizer 
      * @param behavior the new behavior to add

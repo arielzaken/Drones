@@ -15,7 +15,7 @@ I2CLaserDistanceSensor::~I2CLaserDistanceSensor()
 
 void I2CLaserDistanceSensor::initialize(uint8_t address)
 {
-                      lox->begin(address);
+    lox->begin(address);
     lox->configSensor(Adafruit_VL53L0X::VL53L0X_SENSE_LONG_RANGE);
 }
 

@@ -1,14 +1,14 @@
 #include "Stabilizer.h"
 
-void Stabilizer::calcBehaviors()
+Twist Stabilizer::calcTwist()
 {
-    for (size_t i = 0; i < numOfBehaviors; i += behaviors[i] != nullptr){
+    Twist res;
+    for (size_t i = 0; i < numOfBehaviors; i++){
         if(behaviors[i] != nullptr){
-
-            // TODO: implement behaviors summing.
+            res += behaviors[i]->calcBehavior();
         }
     }
-    
+    return res;
 }
 
 uint8_t Stabilizer::addBehavior(Behavior_I &behavior)
@@ -17,6 +17,8 @@ uint8_t Stabilizer::addBehavior(Behavior_I &behavior)
         for(size_t i = 0; i < STABILIZER_NUM_OF_BEHAVIORS; i++){
             if(!behaviors[i]){
                 behaviors[i] = &behavior;
+                behavior.setup();
+                numOfBehaviors++;
                 return i;
             }
         }
