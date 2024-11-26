@@ -1,18 +1,18 @@
 #pragma once
 
 #include "DroneController/DroneControllerInterface.h"
-#include "Operator/OperatorTypes.h"
+#include "Primitives/Primitives.h"
+#include <Print.h>
 #include <RTOS.h>
 void mockControllerLoop(void* arg);
 class ControllerMock : public DroneControllerInterface
 {
 private:
-    Twist pos;
+    Pos pos;
     uint16_t throttle = 1000; // the speed upwards throttle
     uint16_t pitch = 1500; // z axis rot
     uint16_t roll = 1500; // y axis rot
     uint16_t yaw = 1500; // x axis rot
-    bool armed = false;
     TaskHandle_t taskHandle = nullptr;
 public:
     virtual void setThrottle(uint16_t throttle) override;
@@ -28,5 +28,5 @@ public:
 
     void print(Print &);
     friend void mockControllerLoop(void* arg);
-    Twist getPos();
+    Pos getPos();
 };

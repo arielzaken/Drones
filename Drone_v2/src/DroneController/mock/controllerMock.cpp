@@ -72,7 +72,7 @@ void ControllerMock::enable()
         xTaskCreate(
             mockControllerLoop,
             "mockControllerLoop",
-            1024,
+            2048,
             this,
             1,
             &(this->taskHandle)
@@ -83,12 +83,11 @@ void ControllerMock::enable()
 
 void ControllerMock::print(Print &out)
 {
-    pos.print(out);
-    out.println();
+    out.printf("(%f, %f, %f, %f)\n", pos[X], pos[Y], pos[Z], pos[W]);
     //out.printf(" | %d, %d, %d, %d\n", throttle, roll, yaw, pitch);
 }
 
-Twist ControllerMock::getPos()
+Pos ControllerMock::getPos()
 {
     return pos;
 }
@@ -102,12 +101,13 @@ void mockControllerLoop(void* arg){
     for(;;){
         //taskENTER_CRITICAL(&pMT);
         firstTime = millis();
-        uint64_t diff = (firstTime - lastTime);
-        This->pos.v.x += (This->yaw - 1500) * diff;  // the 0 is 1500
-        This->pos.v.y += (This->roll - 1500) * diff; // the 0 is 1500
-        int32_t tempz = This->pos.v.z + (This->throttle - 1250) * diff; // the 0 is 1250
-        This->pos.v.z = tempz > 0 ? tempz : 0; // z cannot be negative
-        This->pos.w += (This->pitch - 1500) * diff; // the 0 is 1500
+        float diff = (float)(firstTime - lastTime) / 1000;
+        //Serial.printf("%f\n", diff);
+        This->pos[X] += ((float)(This->yaw - 1500)) * diff;  // the 0 is 1500
+        This->pos[Y] += ((float)(This->roll - 1500)) * diff; // the 0 is 1500
+        float tempz = This->pos[Z] + ((float)(This->throttle - 1250)) * diff; // the 0 is 1250
+        This->pos[Z] = tempz > 0 ? tempz : 0; // z cannot be negative
+        This->pos[W] += ((float)(This->pitch - 1500)) * diff; // the 0 is 1500
         lastTime = firstTime;
         //taskEXIT_CRITICAL(&pMT);
         delay(1);
