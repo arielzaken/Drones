@@ -4,10 +4,10 @@
 #include "Operator/OperatorTypes.h"
 #include <RTOS.h>
 void mockControllerLoop(void* arg);
-class controllerMock : public DroneControllerInterface
+class ControllerMock : public DroneControllerInterface
 {
 private:
-    vec3D pos;
+    Twist pos;
     uint16_t throttle = 1000; // the speed upwards throttle
     uint16_t pitch = 1500; // z axis rot
     uint16_t roll = 1500; // y axis rot
@@ -26,5 +26,7 @@ public:
     virtual void disable() override;
     virtual void enable() override;
 
+    void print(Print &);
     friend void mockControllerLoop(void* arg);
+    Twist getPos();
 };

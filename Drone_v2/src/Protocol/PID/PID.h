@@ -11,17 +11,36 @@ class PID {
     int32_t error, prev_error, integral;
     int32_t output;
     int32_t max_value;
-    
+    uint64_t lastTime;
     public:
-    PID(int32_t p, int32_t i, int32_t d,int32_t max_value) : kp(p), ki(i), kd(d),max_value(max_value), error(0), prev_error(0), integral(0), output(0) {}
-    
+    PID(int32_t p, int32_t i, int32_t d,int32_t max_value) : kp(p), ki(i), kd(d),max_value(max_value), error(0), prev_error(0), integral(0), output(0) {
+        lastTime = millis();
+    }
     int32_t update(int32_t setpoint, int32_t measured_value) {
+        uint64_t now = millis();
+        uint32_t dt = now - lastTime;
+        if(dt >= 50){
+            lastTime = now;
+            return 0;
+        }
         error = setpoint - measured_value;
-        integral += error;
-        int32_t derivative = error - prev_error;
+        int32_t temp = integral + (error * dt);
+        integral = (temp > 300000 || temp < -300000) ? integral : temp;
+        int32_t derivative = (error - prev_error) / (int32_t)dt;
         output = kp * error + ki * integral + kd * derivative;
+        // Serial.print("dt:");
+        // Serial.println(dt);
+        // Serial.print("e:");
+        // Serial.println(error);
+        // Serial.print("ti:");
+        // Serial.println(temp);
+        // Serial.print("d:");
+        // Serial.println(derivative);
+        // Serial.print("o:");
+        // Serial.println(output);
         prev_error = error;
-        output = clamp(output, max_value, -max_value); // Limit the output to -200 to 200
+        lastTime = now;
+        output = clamp(output >> 7, -max_value, max_value); // Limit the output to -200 to 200
         return output;
     }
 };

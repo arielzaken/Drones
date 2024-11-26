@@ -34,14 +34,8 @@ typedef struct vec3D {
     vec3D(): x(0), y(0), z(0) {}
     vec3D(int32_t _x, int32_t _y, int32_t _z): x(_x), y(_y), z(_z) {}
     // print
-    void print() const {
-        Serial.print("(");
-        Serial.print(x);
-        Serial.print(", ");
-        Serial.print(y);
-        Serial.print(", ");
-        Serial.print(z);
-        Serial.print(")");
+    void print(Print& out) const {
+        out.printf("(%d, %d, %d)",  x, y, z);
     }
 
     // Overload the + operator for vec3D addition
@@ -91,10 +85,10 @@ typedef struct Twist {
     Twist(const vec3D& _v, int32_t _w): v(_v), w(_w) {}
 
     // print
-    void print() const {
-        v.print();
-        Serial.print(",");
-        Serial.print(w);
+    void print(Print& out) const {
+        v.print(out);
+        out.print(",");
+        out.print(w);
     }
 
     // Overload the + operator for Twist addition
