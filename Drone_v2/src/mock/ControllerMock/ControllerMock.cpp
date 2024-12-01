@@ -92,6 +92,11 @@ Pos ControllerMock::getPos()
     return pos;
 }
 
+Velocity ControllerMock::getVelocity()
+{
+    return vel;
+}
+
 //static portMUX_TYPE pMT;
 
 void mockControllerLoop(void* arg){
@@ -103,11 +108,19 @@ void mockControllerLoop(void* arg){
         firstTime = millis();
         float diff = (float)(firstTime - lastTime) / 1000;
         //Serial.printf("%f\n", diff);
-        This->pos[X] += ((float)(This->yaw - 1500)) * diff;  // the 0 is 1500
-        This->pos[Y] += ((float)(This->roll - 1500)) * diff; // the 0 is 1500
-        float tempz = This->pos[Z] + ((float)(This->throttle - 1250)) * diff; // the 0 is 1250
-        This->pos[Z] = tempz > 0 ? tempz : 0; // z cannot be negative
-        This->pos[W] += ((float)(This->pitch - 1500)) * diff; // the 0 is 1500
+        This->vel[X] = (float)(This->yaw - 1500);        // the 0 is 1500
+        This->vel[Y] = (float)(This->yaw - 1500);        // the 0 is 1500
+        This->vel[Z] = (float)(This->throttle - 1250);   // the 0 is 1250
+        This->vel[W] = (float)(This->pitch - 1500);      // the 0 is 1500
+
+        This->pos[X] += This->vel[X] * diff;
+        This->pos[Y] += This->vel[Y] * diff; 
+
+        float tempz = This->pos[Z] + This->vel[Z] * diff; 
+        This->pos[Z] = tempz > 0 ? tempz : 0; 
+
+        This->pos[W] += This->vel[W] * diff; 
+        
         lastTime = firstTime;
         //taskEXIT_CRITICAL(&pMT);
         delay(1);

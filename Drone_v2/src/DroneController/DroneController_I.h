@@ -1,5 +1,7 @@
+#pragma once
 #include "stdint.h"
-class DroneControllerInterface{
+class DroneController_I{
+public:
     virtual void setThrottle(uint16_t throttle) = 0;
     virtual void setPitch(uint16_t pitch) = 0;
     virtual void setYaw(uint16_t yaw) = 0;

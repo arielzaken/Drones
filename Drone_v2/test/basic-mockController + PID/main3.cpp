@@ -23,26 +23,14 @@ void setup() {
         NULL
     );
     delay(1000);
-    // cm.setThrottle(1260);
     // Serial.printf("1260\n");
     // cm.setRoll(1510);
     // delay(2000);
-    for (int i = 50; i >= -50; i--)
-    {
-        Serial.printf("%d\n", i);
-        cm.setThrottle(1250 + i);
-        delay(100);
-    }
-    
 }
 
-// int32_t out;
+float acc = 0;
 void loop() {
-    // out = yPID.update(4000, cm.getPos().v.y);
-    // cm.setRoll(1500 + out);
-    // Serial.println(out);
-    // out = zPID.update(2000000, cm.getPos().v.z);
-    // cm.setThrottle(1250 + out);
-    // // Serial.println(out);
-    // delay(5);
+    float error = 5000-cm.getPos()[Z];
+    cm.setThrottle(1000 + error * error * error + acc * 5);
+    acc = (acc + error > 100 || acc + error < -100) ? 0 : acc + error;
 }

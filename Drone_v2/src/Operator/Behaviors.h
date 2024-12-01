@@ -5,30 +5,30 @@ class TakeoffBehavior : public Behavior_I
 {
     unsigned long startTime;
     DistanceSensor *sensor;
-    Twist oldTwist;
+    Velocity oldTwist;
 public:
     TakeoffBehavior(DistanceSensor &sensor) : sensor(&sensor){}
-    virtual Twist calcBehavior() override;
+    virtual Velocity calcBehavior() override;
     virtual void setup() override;
 };
 
 class LandBehavior : public Behavior_I
 {
 public:
-    virtual Twist calcBehavior() override;
+    virtual Velocity calcBehavior() override;
     virtual void setup() override;
 };
 
 class TransitBehavior : public Behavior_I
 {
 public:
-    virtual Twist calcBehavior() override;
+    virtual Velocity calcBehavior() override;
     virtual void setup() override;
 };
 
 class CollisionAvoidanceBehavior : public Behavior_I
 {
 public:
-    virtual Twist calcBehavior() override; 
+    virtual Velocity calcBehavior() override; 
     virtual void setup() override;
 };

@@ -1,8 +1,9 @@
 #pragma once
-#include "OperatorTypes.h"
+#include "Primitives/Primitives.h"
+#include <stdint.h>
 class Behavior_I
 {
 public:
-    virtual Twist calcBehavior() = 0;
+    virtual Velocity calcBehavior() = 0;
     virtual void setup() = 0;
 };

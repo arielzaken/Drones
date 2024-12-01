@@ -1,8 +1,10 @@
 #include "Adafruit_VL53L0X.h"
 #include "Sensors/CashProxy/SensorCashProxy.h"
-#include "Sensors/DistanceSensor/mock/disMock.h"
+#include "mock/disMock/disMock.h"
 #include "Arduino.h"
-disMock dis;
+
+
+DisMock dis([]() { return 5; });
 
 SensorCashProxy<uint16_t> lox(dis, 1000);
 

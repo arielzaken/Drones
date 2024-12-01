@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "DroneController/mock/ControllerMock.h"
+#include "mock/ControllerMock/ControllerMock.h"
 #include "Protocol/PID/PID.h"
 ControllerMock cm;
 PID xPID(1, 0, 0, 200);
