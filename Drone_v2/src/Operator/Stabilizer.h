@@ -17,7 +17,11 @@ class Stabilizer
     
     Velocity calcTwist();
 public:
-    Stabilizer();
+    Stabilizer(
+        DroneController_I& _droneController,
+        Controller_t& _controller,
+        VelocitySensor& _velocitySensor
+        );
     /**
      * add a new behavior mid-run to the stablizer 
      * @param behavior the new behavior to add

@@ -11,7 +11,8 @@ Velocity Stabilizer::calcTwist()
     return res;
 }
 
-Stabilizer::Stabilizer()
+Stabilizer::Stabilizer(DroneController_I &_droneController, Controller_t &_controller, VelocitySensor &_velocitySensor) : 
+    droneController(_droneController), controller(_controller), velocitySensor(_velocitySensor)
 {
     memset(behaviors, 0, sizeof(Behavior_I*) * STABILIZER_NUM_OF_BEHAVIORS);
     numOfBehaviors = 0;
