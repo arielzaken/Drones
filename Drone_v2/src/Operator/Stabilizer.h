@@ -34,9 +34,5 @@ public:
      */
     void removeBehavior(uint8_t discriptor);
 
-    void setDroneController(const DroneController_I& controller);
-    void setVelocitySensor(const VelocitySensor& sensor);
-    void setController(const Controller_t& sensor);
-
     friend void stabilizerLoop(void* This);
 };

@@ -11,8 +11,13 @@ Velocity Stabilizer::calcTwist()
     return res;
 }
 
-Stabilizer::Stabilizer(DroneController_I &_droneController, Controller_t &_controller, VelocitySensor &_velocitySensor) : 
-    droneController(_droneController), controller(_controller), velocitySensor(_velocitySensor)
+Stabilizer::Stabilizer(
+    DroneController_I &_droneController,
+    Controller_t &_controller,
+    VelocitySensor &_velocitySensor) : 
+    droneController(_droneController),
+    controller(_controller),
+    velocitySensor(_velocitySensor)
 {
     memset(behaviors, 0, sizeof(Behavior_I*) * STABILIZER_NUM_OF_BEHAVIORS);
     numOfBehaviors = 0;
@@ -36,21 +41,6 @@ uint8_t Stabilizer::addBehavior(Behavior_I &behavior)
 void Stabilizer::removeBehavior(uint8_t discriptor)
 {
     behaviors[discriptor] = nullptr;
-}
-
-void Stabilizer::setDroneController(const DroneController_I &controller)
-{
-    droneController = controller;
-}
-
-void Stabilizer::setVelocitySensor(const VelocitySensor &sensor)
-{
-    velocitySensor = sensor;
-}
-
-void Stabilizer::setController(const Controller_t &con)
-{
-    controller = con;
 }
 
 void stabilizerLoop(void *arg)

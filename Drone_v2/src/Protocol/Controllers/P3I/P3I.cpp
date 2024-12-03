@@ -1,6 +1,6 @@
-#include "PPPI.h"
+#include "P3I.h"
 
-float PPPI::update(float setpoint, float measured_value)
+float P3I::update(float setpoint, float measured_value)
 {
     float error = setpoint-measured_value;
     float res = error * error * error * kp + acc * ki;
