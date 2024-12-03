@@ -1,5 +1,21 @@
 #include "Stabilizer.h"
 
+void stabilizerLoop(void *arg)
+{
+    Stabilizer* This = static_cast<Stabilizer*>(arg);
+    Velocity twist = This->calcTwist();
+    for(;;) {
+        Velocity currVel = This->velocitySensor.read();
+        currVel.print();
+        Twist<uint16_t> command = This->controller.update(twist ,currVel);
+        This->droneController.setThrottle(command[Z]);
+        This->droneController.setPitch(command[W]);
+        This->droneController.setYaw(command[Y]);
+        This->droneController.setRoll(command[X]);
+        delay(4);
+    }
+}
+
 Velocity Stabilizer::calcTwist()
 {
     Velocity res;
@@ -43,17 +59,26 @@ void Stabilizer::removeBehavior(uint8_t discriptor)
     behaviors[discriptor] = nullptr;
 }
 
-void stabilizerLoop(void *arg)
+void Stabilizer::begin()
 {
-    Stabilizer* This = static_cast<Stabilizer*>(arg);
-    Velocity twist = This->calcTwist();
-    for(;;) {
-        Velocity currVel = This->velocitySensor.read();
-        Twist<uint16_t> command = This->controller.update(twist ,currVel);
-        This->droneController.setThrottle(command[Z]);
-        This->droneController.setPitch(command[W]);
-        This->droneController.setYaw(command[Y]);
-        This->droneController.setRoll(command[X]);
-        delay(4);
+    if(this->task == nullptr){
+        xTaskCreate(
+            stabilizerLoop,
+            "StabilizerLoop",
+            1024,
+            this,
+            1,
+            &(this->task)
+        );
     }
 }
+
+void Stabilizer::end()
+{
+    if(this->task != nullptr){
+        vTaskDelete(this->task);
+        this->task = nullptr;
+    }
+}
+
+

@@ -83,7 +83,8 @@ void ControllerMock::enable()
 
 void ControllerMock::print(Print &out)
 {
-    out.printf("(%f, %f, %f, %f)\n", pos[X], pos[Y], pos[Z], pos[W]);
+    out.printf("(%5.2f, %5.2f, %5.2f, %5.2f) | t:%u y:%u r:%u p:%u\n"
+            , pos[X], pos[Y], pos[Z], pos[W], throttle, yaw, roll, pitch);
     //out.printf(" | %d, %d, %d, %d\n", throttle, roll, yaw, pitch);
 }
 
@@ -107,20 +108,19 @@ void mockControllerLoop(void* arg){
         //taskENTER_CRITICAL(&pMT);
         firstTime = millis();
         float diff = (float)(firstTime - lastTime) / 1000;
-        //Serial.printf("%f\n", diff);
-        This->vel[X] = (float)(This->yaw - 1500);        // the 0 is 1500
-        This->vel[Y] = (float)(This->yaw - 1500);        // the 0 is 1500
-        This->vel[Z] = (float)(This->throttle - 1250);   // the 0 is 1250
-        This->vel[W] = (float)(This->pitch - 1500);      // the 0 is 1500
 
-        This->pos[X] += This->vel[X] * diff;
-        This->pos[Y] += This->vel[Y] * diff; 
+        Pos lastPos = This->pos;
 
-        float tempz = This->pos[Z] + This->vel[Z] * diff; 
+        This->pos[X] += (float)(This->yaw - 1500) * diff;
+        This->pos[Y] += (float)(This->yaw - 1500) * diff; 
+
+        float tempz = This->pos[Z] + (float)(This->throttle - 1250) * diff; 
         This->pos[Z] = tempz > 0 ? tempz : 0; 
 
-        This->pos[W] += This->vel[W] * diff; 
+        This->pos[W] += (float)(This->pitch - 1500) * diff; 
         
+        This->vel = (This->pos - lastPos) * (1/diff);
+
         lastTime = firstTime;
         //taskEXIT_CRITICAL(&pMT);
         delay(1);

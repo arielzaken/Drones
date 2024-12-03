@@ -1,35 +1,41 @@
-#include "mock/SensorMock/SensorMock.h"
-#include "mock/ControllerMock/ControllerMock.h"
-#include "Operator/Stabilizer.h"
-#include "Operator/Behaviors/HoverBehavior/HoverBehavior.h"
-#include "Protocol/Controllers/VelP3I/VelP3I.h"
 #include "Arduino.h"
+#include "mock/ControllerMock/ControllerMock.h"
+#include "Protocol/Controllers/P3I/P3I.h"
 
-ControllerMock CM;
+float res;
 
-SensorMock<uint16_t> altSensor([&]() { return (int32_t)(CM.getPos()[Z] * 100); });
+ControllerMock cm;
 
-SensorMock<Velocity> velSensor([&]() { return CM.getVelocity(); });
+P3I controller(1, 5);
 
-VelP3I cont(1, 5);
-
-Stabilizer stab(
-    (DroneController_I&)CM,
-    (Controller_t&)cont,
-    (VelocitySensor&)velSensor
-    );
-
-HoverBehavior hover_B((DistanceSensor&)altSensor, 2000);
-uint8_t hover_bd;
+void printTask(void* arg){
+    Serial.printf("printTask created\n");
+    for(;;){
+        cm.print(Serial);
+        Serial.println(cm.getVelocity()[Z]);
+        Serial.println(res);
+        delay(100);
+    }
+}
 
 void setup() {
 	Serial.begin(115200);
-    CM.enable();
+    cm.enable();
+    xTaskCreate(
+        printTask,
+        "printTask",
+        2048,
+        NULL,
+        1,
+        NULL
+    );
+    delay(1000);
+    // res = controller.update(0, 750.0f);
+    // Serial.println(res);
 
-    hover_bd = stab.addBehavior(hover_B);
 }
 
 void loop() {
-    CM.print();
-    delay(300);
+    res = controller.update(10, cm.getVelocity()[Z]);
+    cm.setThrottle(1000 + res);
 }

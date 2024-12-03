@@ -14,6 +14,8 @@ class Stabilizer
     DroneController_I& droneController;
     Controller_t& controller;
     VelocitySensor& velocitySensor;
+
+    TaskHandle_t task = nullptr;
     
     Velocity calcTwist();
 public:
@@ -33,6 +35,9 @@ public:
      * @param discriptor the discriptor we got from the addBehavior method to remove the behavior.
      */
     void removeBehavior(uint8_t discriptor);
+
+    void begin();
+    void end();
 
     friend void stabilizerLoop(void* This);
 };
